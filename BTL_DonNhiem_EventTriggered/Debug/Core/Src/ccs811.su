@@ -1,0 +1,14 @@
+../Core/Src/ccs811.c:13:9:CCS811_ReadReg	40	static
+../Core/Src/ccs811.c:20:6:CCS811_ReadRegMulti	32	static
+../Core/Src/ccs811.c:26:6:CCS811_WriteReg	32	static
+../Core/Src/ccs811.c:32:6:CCS811_WriteRegMulti	32	static
+../Core/Src/ccs811.c:37:6:CCS811_Init	32	static
+../Core/Src/ccs811.c:67:6:CCS811_Reset	8	static
+../Core/Src/ccs811.c:72:6:CCS811_Set_Mode	16	static
+../Core/Src/ccs811.c:89:6:CCS811_Read_Co2	24	static
+../Core/Src/ccs811.c:97:6:CCS811_Read_TVOC	24	static
+../Core/Src/ccs811.c:105:9:CCS811_CheckHW_ID	16	static
+../Core/Src/ccs811.c:122:6:CCS811_EnableInt	16	static
+../Core/Src/ccs811.c:130:6:CCS811_DisableInt	16	static
+../Core/Src/ccs811.c:139:10:CCS811_GetBaseline	16	static
+../Core/Src/ccs811.c:147:6:CCS811_RestoreBaseline	24	static
