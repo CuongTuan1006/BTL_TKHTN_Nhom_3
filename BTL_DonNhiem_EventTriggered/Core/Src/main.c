@@ -186,7 +186,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
     if (huart->Instance == USART1)
     {
-    	if((char)Uart_RX_Buf[0] == '1')
+    	if((char)Uart_RX_Buf[0] == '3')
     		 {
     			TVOC_measure();
     			sprintf((char*)Uart_TX_Buf, "TVOC:%d ppb\r\n",(int)Tvoc_ppb);
@@ -198,7 +198,7 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
     			sprintf((char*)Uart_TX_Buf, "CO2:%d ppm\r\n",(int)Tvoc_ppb);
     			HAL_UART_Transmit(&huart1,(uint8_t*) Uart_TX_Buf,strlen((char*)Uart_TX_Buf) , HAL_MAX_DELAY);
     		 }
-    		 else if((char)Uart_RX_Buf[0]  == '3')
+    		 else if((char)Uart_RX_Buf[0]  == '1')
     		 {
     			CO_measure();
     			sprintf((char*)Uart_TX_Buf, "CO:%d ppm\r\n",(int)Tvoc_ppb);

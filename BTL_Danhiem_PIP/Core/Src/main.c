@@ -164,6 +164,8 @@ void Uart_Send()
 	HAL_UART_Transmit(&huart1, (uint8_t*)Uart_TX_Buf,strlen((char*)Uart_TX_Buf) , HAL_MAX_DELAY);
 	sprintf((char*)Uart_TX_Buf, "CO2:%d ppm\r\n",(int)CO2_ppm);
 	HAL_UART_Transmit(&huart1,(uint8_t*)Uart_TX_Buf,strlen((char*)Uart_TX_Buf) , HAL_MAX_DELAY);
+	sprintf((char*)Uart_TX_Buf, "--------\r\n");
+	HAL_UART_Transmit(&huart1, (uint8_t*)Uart_TX_Buf, strlen((char*)Uart_TX_Buf), HAL_MAX_DELAY);
 }
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
     if (huart->Instance == USART1)
@@ -542,14 +544,8 @@ void StartTVOC_mea(void const * argument)
   for(;;)
   {
 	if (osMutexWait(MutexCCS811Handle, osWaitForever) == osOK){
-		sprintf((char*)Uart_TX_Buf," %lu TVOCMEA IN \r\n",osKernelSysTick());
-		HAL_UART_Transmit(&huart1, Uart_TX_Buf, 25, HAL_MAX_DELAY);
 		TVOC_measure();
 		TVOC.value = Tvoc_ppb;
-
-		sprintf((char*)Uart_TX_Buf," %lu TVOCMEA OUT \r\n",osKernelSysTick());
-		HAL_UART_Transmit(&huart1, Uart_TX_Buf, 25, HAL_MAX_DELAY);
-
 		HAL_Delay(990);
 		osMutexRelease(MutexCCS811Handle);
 	}
@@ -572,14 +568,8 @@ void StartCO2_mea(void const * argument)
   for(;;)
   {
 	if (osMutexWait(MutexCCS811Handle, osWaitForever) == osOK){
-	  sprintf((char*)Uart_TX_Buf," %lu CO2MEA IN \r\n",osKernelSysTick());
-	  HAL_UART_Transmit(&huart1, Uart_TX_Buf, 25, HAL_MAX_DELAY);
 	  CO2_measure();
 	  CO2.value = CO2_ppm;
-
-	  sprintf((char*)Uart_TX_Buf," %lu CO2MEA OUT \r\n",osKernelSysTick());
-	  HAL_UART_Transmit(&huart1, Uart_TX_Buf, 25, HAL_MAX_DELAY);
-
 	  HAL_Delay(990);
 	  osMutexRelease(MutexCCS811Handle);
 	}
@@ -602,14 +592,8 @@ void StartCO_mea(void const * argument)
   for(;;)
   {
 	if (osMutexWait(MutexCCS811Handle, osWaitForever) == osOK){
-		sprintf((char*)Uart_TX_Buf," %lu COMEA IN \r\n",osKernelSysTick());
-		HAL_UART_Transmit(&huart1, Uart_TX_Buf, 25, HAL_MAX_DELAY);
 		CO_measure();
 		CO.value = CO_ppm;
-
-		sprintf((char*)Uart_TX_Buf," %lu COMEA OUT \r\n",osKernelSysTick());
-		HAL_UART_Transmit(&huart1, Uart_TX_Buf, 25, HAL_MAX_DELAY);
-
 		HAL_Delay(990);
 		osMutexRelease(MutexCCS811Handle);
 	}
@@ -655,11 +639,7 @@ void StartUart_Send(void const * argument)
   /* Infinite loop */
   for(;;)
   {
-	sprintf((char*)Uart_TX_Buf," %lu UART IN \r\n",osKernelSysTick());
-	HAL_UART_Transmit(&huart1, Uart_TX_Buf, 25, HAL_MAX_DELAY);
 	Uart_Send();
-	sprintf((char*)Uart_TX_Buf," %lu UART OUT \r\n",osKernelSysTick());
-	HAL_UART_Transmit(&huart1, Uart_TX_Buf, 25, HAL_MAX_DELAY);
     osDelay(3000);
   }
   /* USER CODE END StartUart_Send */
@@ -679,8 +659,6 @@ void StartTaskIsr(void const * argument)
   for(;;)
   {
 	 osSemaphoreWait(BinarySem_ISRHandle,osWaitForever);
-	 sprintf((char*)Uart_TX_Buf,"%lu ISR IN \r\n", osKernelSysTick());
-	 HAL_UART_Transmit(&huart1, Uart_TX_Buf, 25, HAL_MAX_DELAY);
 	 if((char)Uart_RX_Buf[0] == '1')
 	 {
 		TVOC_measure();
@@ -699,9 +677,6 @@ void StartTaskIsr(void const * argument)
 		sprintf((char*)Uart_TX_Buf, "CO:%d ppm\r\n",(int)CO_ppm);
 		HAL_UART_Transmit(&huart1,(uint8_t*) Uart_TX_Buf,strlen((char*)Uart_TX_Buf) , HAL_MAX_DELAY);
 	 }
-	 sprintf((char*)Uart_TX_Buf,"%lu ISR OUT \r\n", osKernelSysTick());
-	 HAL_UART_Transmit(&huart1, Uart_TX_Buf, 25, HAL_MAX_DELAY);
-	 //osSemaphoreRelease(myBinarySem01Handle);
 	 osDelay(1000);
   }
   /* USER CODE END StartTaskIsr */
@@ -768,11 +743,7 @@ void StartWarning(void const * argument)
   /* Infinite loop */
   for(;;)
   {
-	  sprintf((char*)Uart_TX_Buf,"%lu Warning IN \r\n", osKernelSysTick());
-	  HAL_UART_Transmit(&huart1, Uart_TX_Buf, 25, HAL_MAX_DELAY);
 	  Warning();
-	  sprintf((char*)Uart_TX_Buf,"%lu Warning OUT \r\n", osKernelSysTick());
-	  HAL_UART_Transmit(&huart1, Uart_TX_Buf, 25, HAL_MAX_DELAY);
 	  osDelay(1000);
   }
   /* USER CODE END StartWarning */

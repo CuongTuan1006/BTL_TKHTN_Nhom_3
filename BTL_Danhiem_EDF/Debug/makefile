@@ -67,8 +67,8 @@ all: main-build
 main-build: BTL_Danhiem_EDF.elf secondary-outputs
 
 # Tool invocations
-BTL_Danhiem_EDF.elf BTL_Danhiem_EDF.map: $(OBJS) $(USER_OBJS) E:\workspace\ STM32\ cube\ IDE\BTL_Danhiem_EDF\STM32F103C8TX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-gcc -o "BTL_Danhiem_EDF.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m3 -T"E:\workspace STM32 cube IDE\BTL_Danhiem_EDF\STM32F103C8TX_FLASH.ld" --specs=nosys.specs -Wl,-Map="BTL_Danhiem_EDF.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+BTL_Danhiem_EDF.elf BTL_Danhiem_EDF.map: $(OBJS) $(USER_OBJS) E:\workspace\ STM32\ cube\ IDE\BTL_TKHTN_Nhom_3\BTL_Danhiem_EDF\STM32F103C8TX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-gcc -o "BTL_Danhiem_EDF.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m3 -T"E:\workspace STM32 cube IDE\BTL_TKHTN_Nhom_3\BTL_Danhiem_EDF\STM32F103C8TX_FLASH.ld" --specs=nosys.specs -Wl,-Map="BTL_Danhiem_EDF.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 
