@@ -63,8 +63,8 @@ all: main-build
 main-build: BTL_DonNhiem_EventTriggered.elf secondary-outputs
 
 # Tool invocations
-BTL_DonNhiem_EventTriggered.elf BTL_DonNhiem_EventTriggered.map: $(OBJS) $(USER_OBJS) D:\stm32\BTL_DonNhiem_EventTriggered\STM32F103C8TX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-gcc -o "BTL_DonNhiem_EventTriggered.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m3 -T"D:\stm32\BTL_DonNhiem_EventTriggered\STM32F103C8TX_FLASH.ld" --specs=nosys.specs -Wl,-Map="BTL_DonNhiem_EventTriggered.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+BTL_DonNhiem_EventTriggered.elf BTL_DonNhiem_EventTriggered.map: $(OBJS) $(USER_OBJS) E:\workspace\ STM32\ cube\ IDE\BTL_TKHTN_Nhom_3\BTL_DonNhiem_EventTriggered\STM32F103C8TX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-gcc -o "BTL_DonNhiem_EventTriggered.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m3 -T"E:\workspace STM32 cube IDE\BTL_TKHTN_Nhom_3\BTL_DonNhiem_EventTriggered\STM32F103C8TX_FLASH.ld" --specs=nosys.specs -Wl,-Map="BTL_DonNhiem_EventTriggered.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 

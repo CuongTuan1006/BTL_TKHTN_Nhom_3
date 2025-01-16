@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Rename resource &apos;BTL_Danhiem_RMS/BTL_Danhiem_PIP.ioc&apos; to &apos;BTL_Danhiem_RMS.ioc&apos;" description="Rename resource &apos;BTL_Danhiem_PIP.ioc&apos;" flags="7" id="org.eclipse.ltk.core.refactoring.rename.resource" input="BTL_Danhiem_PIP.ioc" name="BTL_Danhiem_RMS.ioc" stamp="1737012201844" updateReferences="true"/>
+</session>

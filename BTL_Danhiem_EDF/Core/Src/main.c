@@ -54,13 +54,13 @@ I2C_HandleTypeDef hi2c2;
 
 UART_HandleTypeDef huart1;
 
-osThreadId TVOC_meaHandle;
-osThreadId CO2_meaHandle;
 osThreadId CO_meaHandle;
-osThreadId LCD_1Handle;
-osThreadId Uart_SendHandle;
-osThreadId Task_IsrHandle;
 osThreadId WarningHandle;
+osThreadId LCDHandle;
+osThreadId CO2_meaHandle;
+osThreadId TVOC_meaHandle;
+osThreadId UART_SendHandle;
+osThreadId Task_ISRHandle;
 osMessageQId LCD_QueueHandle;
 osSemaphoreId BinarySem_ISRHandle;
 /* USER CODE BEGIN PV */
@@ -107,13 +107,13 @@ static void MX_ADC1_Init(void);
 static void MX_I2C1_Init(void);
 static void MX_I2C2_Init(void);
 static void MX_USART1_UART_Init(void);
-void StartTVOC_mea(void const * argument);
-void StartCO2_mea(void const * argument);
 void StartCO_mea(void const * argument);
-void StartLCD_1(void const * argument);
-void StartUart_Send(void const * argument);
-void StartTaskIsr(void const * argument);
 void StartWarning(void const * argument);
+void StartLCD(void const * argument);
+void StartCO2_mea(void const * argument);
+void StartTVOC_mea(void const * argument);
+void StartUART_Send(void const * argument);
+void StartTask_ISR(void const * argument);
 
 /* USER CODE BEGIN PFP */
 
@@ -244,33 +244,33 @@ int main(void)
   /* USER CODE END RTOS_QUEUES */
 
   /* Create the thread(s) */
-  /* definition and creation of TVOC_mea */
-  osThreadDef(TVOC_mea, StartTVOC_mea, osPriorityNormal, 0, 128);
-  TVOC_meaHandle = osThreadCreate(osThread(TVOC_mea), NULL);
-
-  /* definition and creation of CO2_mea */
-  osThreadDef(CO2_mea, StartCO2_mea, osPriorityNormal, 0, 128);
-  CO2_meaHandle = osThreadCreate(osThread(CO2_mea), NULL);
-
   /* definition and creation of CO_mea */
   osThreadDef(CO_mea, StartCO_mea, osPriorityNormal, 0, 128);
   CO_meaHandle = osThreadCreate(osThread(CO_mea), NULL);
 
-  /* definition and creation of LCD_1 */
-  osThreadDef(LCD_1, StartLCD_1, osPriorityNormal, 0, 128);
-  LCD_1Handle = osThreadCreate(osThread(LCD_1), NULL);
-
-  /* definition and creation of Uart_Send */
-  osThreadDef(Uart_Send, StartUart_Send, osPriorityNormal, 0, 128);
-  Uart_SendHandle = osThreadCreate(osThread(Uart_Send), NULL);
-
-  /* definition and creation of Task_Isr */
-  osThreadDef(Task_Isr, StartTaskIsr, osPriorityRealtime, 0, 128);
-  Task_IsrHandle = osThreadCreate(osThread(Task_Isr), NULL);
-
   /* definition and creation of Warning */
-  osThreadDef(Warning, StartWarning, osPriorityNormal, 0, 128);
+  osThreadDef(Warning, StartWarning, osPriorityIdle, 0, 128);
   WarningHandle = osThreadCreate(osThread(Warning), NULL);
+
+  /* definition and creation of LCD */
+  osThreadDef(LCD, StartLCD, osPriorityIdle, 0, 128);
+  LCDHandle = osThreadCreate(osThread(LCD), NULL);
+
+  /* definition and creation of CO2_mea */
+  osThreadDef(CO2_mea, StartCO2_mea, osPriorityIdle, 0, 128);
+  CO2_meaHandle = osThreadCreate(osThread(CO2_mea), NULL);
+
+  /* definition and creation of TVOC_mea */
+  osThreadDef(TVOC_mea, StartTVOC_mea, osPriorityIdle, 0, 128);
+  TVOC_meaHandle = osThreadCreate(osThread(TVOC_mea), NULL);
+
+  /* definition and creation of UART_Send */
+  osThreadDef(UART_Send, StartUART_Send, osPriorityIdle, 0, 128);
+  UART_SendHandle = osThreadCreate(osThread(UART_Send), NULL);
+
+  /* definition and creation of Task_ISR */
+  osThreadDef(Task_ISR, StartTask_ISR, osPriorityRealtime, 0, 128);
+  Task_ISRHandle = osThreadCreate(osThread(Task_ISR), NULL);
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
@@ -278,8 +278,8 @@ int main(void)
   task_ids[1] = CO2_meaHandle;
   task_ids[2] = TVOC_meaHandle;
   task_ids[3] = WarningHandle;
-  task_ids[4] = LCD_1Handle;
-  task_ids[5] = Uart_SendHandle;
+  task_ids[4] = LCDHandle;
+  task_ids[5] = UART_SendHandle;
 
   /* USER CODE END RTOS_THREADS */
 
@@ -566,32 +566,82 @@ void EDFScheduler() {
 }
 /* USER CODE END 4 */
 
-/* USER CODE BEGIN Header_StartTVOC_mea */
+/* USER CODE BEGIN Header_StartCO_mea */
 /**
-  * @brief  Function implementing the TVOC_mea thread.
-  * @param  argument: Not used
-  * @retval None
-  */
-/* USER CODE END Header_StartTVOC_mea */
-void StartTVOC_mea(void const * argument)
+* @brief Function implementing the CO_mea thread.
+* @param argument: Not used
+* @retval None
+*/
+/* USER CODE END Header_StartCO_mea */
+void StartCO_mea(void const * argument)
 {
   /* USER CODE BEGIN 5 */
-	SensorData data1;
-	snprintf(data1.sensorName, sizeof(data1.sensorName), "TVOC");
-	snprintf(data1.unit, sizeof(data1.unit), "ppb");
-	uint32_t task_index = 2;
-	uint32_t execution_time = tasks[task_index].execution_time;  // Th�?i gian thực thi của task
+	SensorData data3;
+	snprintf(data3.sensorName, sizeof(data3.sensorName), "CO");
+	snprintf(data3.unit, sizeof(data3.unit), "ppm");
+	uint32_t task_index = 0;
+	uint32_t execution_time = tasks[task_index].execution_time;  // Th ?i gian thực thi của task
 	uint32_t period = tasks[task_index].period;  // Chu kỳ của task
   /* Infinite loop */
   for(;;)
   {
-	  // Tiến hành đo TVOC
-	  TVOC_measure();
-	  data1.value = Tvoc_ppb;
-	  osMessagePut(LCD_QueueHandle, (uint32_t)(uintptr_t)&data1, osWaitForever);
+	  CO_measure();
+	  data3.value = CO_ppm;
+	  osMessagePut(LCD_QueueHandle, (uint32_t)(uintptr_t)&data3, osWaitForever);
 	  osDelay(period - execution_time);
   }
   /* USER CODE END 5 */
+}
+
+/* USER CODE BEGIN Header_StartWarning */
+/**
+* @brief Function implementing the Warning thread.
+* @param argument: Not used
+* @retval None
+*/
+/* USER CODE END Header_StartWarning */
+void StartWarning(void const * argument)
+{
+  /* USER CODE BEGIN StartWarning */
+	uint32_t task_index = 3;
+	uint32_t execution_time = tasks[task_index].execution_time;  // Th ?i gian thực thi của task
+	uint32_t period = tasks[task_index].period;  // Chu kỳ của task
+  /* Infinite loop */
+  for(;;)
+  {
+	Warning();
+    osDelay(period-execution_time);
+  }
+  /* USER CODE END StartWarning */
+}
+
+/* USER CODE BEGIN Header_StartLCD */
+/**
+* @brief Function implementing the LCD thread.
+* @param argument: Not used
+* @retval None
+*/
+/* USER CODE END Header_StartLCD */
+void StartLCD(void const * argument)
+{
+  /* USER CODE BEGIN StartLCD */
+	osEvent evt;
+	SensorData receivedData;
+	uint32_t task_index = 4;
+	uint32_t execution_time = tasks[task_index].execution_time;  // Th ?i gian thực thi của task
+	uint32_t period = tasks[task_index].period;  // Chu kỳ của task
+  /* Infinite loop */
+  for(;;)
+  {
+	evt = osMessageGet(LCD_QueueHandle, osWaitForever);
+	if (evt.status == osEventMessage)
+	{
+	   receivedData = *(SensorData *)evt.value.p;
+	   LCD_Display(receivedData);
+	}
+    osDelay(period-execution_time);
+  }
+  /* USER CODE END StartLCD */
 }
 
 /* USER CODE BEGIN Header_StartCO2_mea */
@@ -608,8 +658,8 @@ void StartCO2_mea(void const * argument)
 	snprintf(data2.sensorName, sizeof(data2.sensorName), "CO2");
 	snprintf(data2.unit, sizeof(data2.unit), "ppm");
 	uint32_t task_index = 1;
-	uint32_t execution_time = tasks[task_index].execution_time;
-	uint32_t period = tasks[task_index].period;
+	uint32_t execution_time = tasks[task_index].execution_time;  // Th ?i gian thực thi của task
+	uint32_t period = tasks[task_index].period;  // Chu kỳ của task
   /* Infinite loop */
   for(;;)
   {
@@ -621,74 +671,45 @@ void StartCO2_mea(void const * argument)
   /* USER CODE END StartCO2_mea */
 }
 
-/* USER CODE BEGIN Header_StartCO_mea */
+/* USER CODE BEGIN Header_StartTVOC_mea */
 /**
-* @brief Function implementing the CO_mea thread.
-* @param argument: Not used
-* @retval None
-*/
-/* USER CODE END Header_StartCO_mea */
-void StartCO_mea(void const * argument)
+  * @brief  Function implementing the TVOC_mea thread.
+  * @param  argument: Not used
+  * @retval None
+  */
+/* USER CODE END Header_StartTVOC_mea */
+void StartTVOC_mea(void const * argument)
 {
-  /* USER CODE BEGIN StartCO_mea */
-	SensorData data3;
-	snprintf(data3.sensorName, sizeof(data3.sensorName), "CO");
-	snprintf(data3.unit, sizeof(data3.unit), "ppm");
-	uint32_t task_index = 0;
-	uint32_t execution_time = tasks[task_index].execution_time;  // Th�?i gian thực thi của task
+  /* USER CODE BEGIN StartTVOC_mea */
+	SensorData data1;
+	snprintf(data1.sensorName, sizeof(data1.sensorName), "TVOC");
+	snprintf(data1.unit, sizeof(data1.unit), "ppb");
+	uint32_t task_index = 2;
+	uint32_t execution_time = tasks[task_index].execution_time;  // Th ?i gian thực thi của task
 	uint32_t period = tasks[task_index].period;  // Chu kỳ của task
   /* Infinite loop */
   for(;;)
   {
-	CO_measure();
-	data3.value = CO_ppm;
-	osMessagePut(LCD_QueueHandle, (uint32_t)(uintptr_t)&data3, osWaitForever);
-	osDelay(period - execution_time);
+	  TVOC_measure();
+	  data1.value = Tvoc_ppb;
+	  osMessagePut(LCD_QueueHandle, (uint32_t)(uintptr_t)&data1, osWaitForever);
+	  osDelay(period - execution_time);
   }
-  /* USER CODE END StartCO_mea */
+  /* USER CODE END StartTVOC_mea */
 }
 
-/* USER CODE BEGIN Header_StartLCD_1 */
+/* USER CODE BEGIN Header_StartUART_Send */
 /**
-* @brief Function implementing the LCD_1 thread.
+* @brief Function implementing the UART_Send thread.
 * @param argument: Not used
 * @retval None
 */
-/* USER CODE END Header_StartLCD_1 */
-void StartLCD_1(void const * argument)
+/* USER CODE END Header_StartUART_Send */
+void StartUART_Send(void const * argument)
 {
-  /* USER CODE BEGIN StartLCD_1 */
-	osEvent evt;
-	SensorData receivedData;
-	uint32_t task_index = 4;
-	uint32_t execution_time = tasks[task_index].execution_time;  // Th�?i gian thực thi của task
-	uint32_t period = tasks[task_index].period;  // Chu kỳ của task
-  /* Infinite loop */
-  for(;;)
-  {
-	evt = osMessageGet(LCD_QueueHandle, osWaitForever);
-	if (evt.status == osEventMessage)
-	{
-	   receivedData = *(SensorData *)evt.value.p;
-	   LCD_Display(receivedData);
-	}
-    osDelay(period-execution_time);
-  }
-  /* USER CODE END StartLCD_1 */
-}
-
-/* USER CODE BEGIN Header_StartUart_Send */
-/**
-* @brief Function implementing the Uart_Send thread.
-* @param argument: Not used
-* @retval None
-*/
-/* USER CODE END Header_StartUart_Send */
-void StartUart_Send(void const * argument)
-{
-  /* USER CODE BEGIN StartUart_Send */
+  /* USER CODE BEGIN StartUART_Send */
 	uint32_t task_index = 5;
-	uint32_t execution_time = tasks[task_index].execution_time;  // Th�?i gian thực thi của task
+	uint32_t execution_time = tasks[task_index].execution_time;  // Th ?i gian thực thi của task
 	uint32_t period = tasks[task_index].period;  // Chu kỳ của task
   /* Infinite loop */
   for(;;)
@@ -696,66 +717,45 @@ void StartUart_Send(void const * argument)
 	Uart_Send();
     osDelay(period-execution_time);
   }
-  /* USER CODE END StartUart_Send */
+  /* USER CODE END StartUART_Send */
 }
 
-/* USER CODE BEGIN Header_StartTaskIsr */
+/* USER CODE BEGIN Header_StartTask_ISR */
 /**
-* @brief Function implementing the Task_Isr thread.
+* @brief Function implementing the Task_ISR thread.
 * @param argument: Not used
 * @retval None
 */
-/* USER CODE END Header_StartTaskIsr */
-void StartTaskIsr(void const * argument)
+/* USER CODE END Header_StartTask_ISR */
+void StartTask_ISR(void const * argument)
 {
-  /* USER CODE BEGIN StartTaskIsr */
+  /* USER CODE BEGIN StartTask_ISR */
   /* Infinite loop */
-  for(;;)
-  {
-	 osSemaphoreWait(BinarySem_ISRHandle,osWaitForever);
-	 if((char)Uart_RX_Buf[0] == '3')
-	 {
-		TVOC_measure();
-		sprintf((char*)Uart_TX_Buf, "TVOC:%d ppb\r\n",(int)Tvoc_ppb);
-		HAL_UART_Transmit(&huart1,(uint8_t*) Uart_TX_Buf,strlen((char*)Uart_TX_Buf) , HAL_MAX_DELAY);
-	 }
-	 else if((char)Uart_RX_Buf[0]  == '2')
-	 {
-		CO2_measure();
-		sprintf((char*)Uart_TX_Buf, "CO2:%d ppm\r\n",(int)CO2_ppm);
-		HAL_UART_Transmit(&huart1,(uint8_t*) Uart_TX_Buf,strlen((char*)Uart_TX_Buf) , HAL_MAX_DELAY);
-	 }
-	 else if((char)Uart_RX_Buf[0]  == '1')
-	 {
-		CO_measure();
-		sprintf((char*)Uart_TX_Buf, "CO:%d ppm\r\n",(int)CO_ppm);
-		HAL_UART_Transmit(&huart1,(uint8_t*) Uart_TX_Buf,strlen((char*)Uart_TX_Buf) , HAL_MAX_DELAY);
-	 }
-	 osDelay(1000);
-  }
-  /* USER CODE END StartTaskIsr */
-}
+	  for(;;)
+	  {
+		 osSemaphoreWait(BinarySem_ISRHandle,osWaitForever);
+		 if((char)Uart_RX_Buf[0] == '3')
+		 {
+			TVOC_measure();
+			sprintf((char*)Uart_TX_Buf, "TVOC:%d ppb\r\n",(int)Tvoc_ppb);
+			HAL_UART_Transmit(&huart1,(uint8_t*) Uart_TX_Buf,strlen((char*)Uart_TX_Buf) , HAL_MAX_DELAY);
+		 }
+		 else if((char)Uart_RX_Buf[0]  == '2')
+		 {
+			CO2_measure();
+			sprintf((char*)Uart_TX_Buf, "CO2:%d ppm\r\n",(int)CO2_ppm);
+			HAL_UART_Transmit(&huart1,(uint8_t*) Uart_TX_Buf,strlen((char*)Uart_TX_Buf) , HAL_MAX_DELAY);
+		 }
+		 else if((char)Uart_RX_Buf[0]  == '1')
+		 {
+			CO_measure();
+			sprintf((char*)Uart_TX_Buf, "CO:%d ppm\r\n",(int)CO_ppm);
+			HAL_UART_Transmit(&huart1,(uint8_t*) Uart_TX_Buf,strlen((char*)Uart_TX_Buf) , HAL_MAX_DELAY);
+		 }
+		 osDelay(1000);
+	  }
 
-/* USER CODE BEGIN Header_StartWarning */
-/**
-* @brief Function implementing the Warning thread.
-* @param argument: Not used
-* @retval None
-*/
-/* USER CODE END Header_StartWarning */
-void StartWarning(void const * argument)
-{
-  /* USER CODE BEGIN StartWarning */
-	uint32_t task_index = 3;
-	uint32_t execution_time = tasks[task_index].execution_time;  // Th�?i gian thực thi của task
-	uint32_t period = tasks[task_index].period;  // Chu kỳ của task
-  /* Infinite loop */
-  for(;;)
-  {
-	Warning();
-    osDelay(period-execution_time);
-  }
-  /* USER CODE END StartWarning */
+  /* USER CODE END StartTask_ISR */
 }
 
 /**

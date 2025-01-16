@@ -7,23 +7,23 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, ALLOC, LOAD, READONLY, DATA
   1 .text         0000a350  08000110  08000110  00001110  2**4
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
-  2 .rodata       00000268  0800a460  0800a460  0000b460  2**3
+  2 .rodata       00000260  0800a460  0800a460  0000b460  2**3
                   CONTENTS, ALLOC, LOAD, READONLY, DATA
-  3 .ARM.extab    00000000  0800a6c8  0800a6c8  0000c0e8  2**0
+  3 .ARM.extab    00000000  0800a6c0  0800a6c0  0000c0e8  2**0
                   CONTENTS
-  4 .ARM          00000008  0800a6c8  0800a6c8  0000b6c8  2**2
+  4 .ARM          00000008  0800a6c0  0800a6c0  0000b6c0  2**2
                   CONTENTS, ALLOC, LOAD, READONLY, DATA
-  5 .preinit_array 00000000  0800a6d0  0800a6d0  0000c0e8  2**0
+  5 .preinit_array 00000000  0800a6c8  0800a6c8  0000c0e8  2**0
                   CONTENTS, ALLOC, LOAD, DATA
-  6 .init_array   00000004  0800a6d0  0800a6d0  0000b6d0  2**2
+  6 .init_array   00000004  0800a6c8  0800a6c8  0000b6c8  2**2
                   CONTENTS, ALLOC, LOAD, READONLY, DATA
-  7 .fini_array   00000004  0800a6d4  0800a6d4  0000b6d4  2**2
+  7 .fini_array   00000004  0800a6cc  0800a6cc  0000b6cc  2**2
                   CONTENTS, ALLOC, LOAD, READONLY, DATA
-  8 .data         000000e8  20000000  0800a6d8  0000c000  2**3
+  8 .data         000000e8  20000000  0800a6d0  0000c000  2**3
                   CONTENTS, ALLOC, LOAD, DATA
-  9 .bss          000019c8  200000e8  0800a7c0  0000c0e8  2**2
+  9 .bss          000019c8  200000e8  0800a7b8  0000c0e8  2**2
                   ALLOC
- 10 ._user_heap_stack 00000600  20001ab0  0800a7c0  0000cab0  2**0
+ 10 ._user_heap_stack 00000600  20001ab0  0800a7b8  0000cab0  2**0
                   ALLOC
  11 .ARM.attributes 00000029  00000000  00000000  0000c0e8  2**0
                   CONTENTS, READONLY
@@ -39,13 +39,13 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, READONLY, DEBUGGING, OCTETS
  17 .debug_line   0001b7fc  00000000  00000000  000459e3  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 18 .debug_str    0009b9aa  00000000  00000000  000611df  2**0
+ 18 .debug_str    0009ba11  00000000  00000000  000611df  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 19 .comment      00000043  00000000  00000000  000fcb89  2**0
+ 19 .comment      00000043  00000000  00000000  000fcbf0  2**0
                   CONTENTS, READONLY
- 20 .debug_frame  00006b74  00000000  00000000  000fcbcc  2**2
+ 20 .debug_frame  00006b74  00000000  00000000  000fcc34  2**2
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 21 .debug_line_str 0000006b  00000000  00000000  00103740  2**0
+ 21 .debug_line_str 00000058  00000000  00000000  001037a8  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
 
 Disassembly of section .text:
@@ -2223,8 +2223,8 @@ int main(void)
   /* USER CODE END RTOS_QUEUES */
 
   /* Create the thread(s) */
-  /* definition and creation of TVOC_mea */
-  osThreadDef(TVOC_mea, StartTVOC_mea, osPriorityNormal, 0, 128);
+  /* definition and creation of CO_mea */
+  osThreadDef(CO_mea, StartCO_mea, osPriorityNormal, 0, 128);
  8001484:	4b57      	ldr	r3, [pc, #348]	@ (80015e4 <main+0x1e4>)
  8001486:	f107 04ac 	add.w	r4, r7, #172	@ 0xac
  800148a:	461d      	mov	r5, r3
@@ -2232,7 +2232,7 @@ int main(void)
  800148e:	c40f      	stmia	r4!, {r0, r1, r2, r3}
  8001490:	e895 0007 	ldmia.w	r5, {r0, r1, r2}
  8001494:	e884 0007 	stmia.w	r4, {r0, r1, r2}
-  TVOC_meaHandle = osThreadCreate(osThread(TVOC_mea), NULL);
+  CO_meaHandle = osThreadCreate(osThread(CO_mea), NULL);
  8001498:	f107 03ac 	add.w	r3, r7, #172	@ 0xac
  800149c:	2100      	movs	r1, #0
  800149e:	4618      	mov	r0, r3
@@ -2241,8 +2241,8 @@ int main(void)
  80014a6:	4a50      	ldr	r2, [pc, #320]	@ (80015e8 <main+0x1e8>)
  80014a8:	6013      	str	r3, [r2, #0]
 
-  /* definition and creation of CO2_mea */
-  osThreadDef(CO2_mea, StartCO2_mea, osPriorityNormal, 0, 128);
+  /* definition and creation of Warning */
+  osThreadDef(Warning, StartWarning, osPriorityIdle, 0, 128);
  80014aa:	4b50      	ldr	r3, [pc, #320]	@ (80015ec <main+0x1ec>)
  80014ac:	f107 0490 	add.w	r4, r7, #144	@ 0x90
  80014b0:	461d      	mov	r5, r3
@@ -2250,7 +2250,7 @@ int main(void)
  80014b4:	c40f      	stmia	r4!, {r0, r1, r2, r3}
  80014b6:	e895 0007 	ldmia.w	r5, {r0, r1, r2}
  80014ba:	e884 0007 	stmia.w	r4, {r0, r1, r2}
-  CO2_meaHandle = osThreadCreate(osThread(CO2_mea), NULL);
+  WarningHandle = osThreadCreate(osThread(Warning), NULL);
  80014be:	f107 0390 	add.w	r3, r7, #144	@ 0x90
  80014c2:	2100      	movs	r1, #0
  80014c4:	4618      	mov	r0, r3
@@ -2259,8 +2259,8 @@ int main(void)
  80014cc:	4a48      	ldr	r2, [pc, #288]	@ (80015f0 <main+0x1f0>)
  80014ce:	6013      	str	r3, [r2, #0]
 
-  /* definition and creation of CO_mea */
-  osThreadDef(CO_mea, StartCO_mea, osPriorityNormal, 0, 128);
+  /* definition and creation of LCD */
+  osThreadDef(LCD, StartLCD, osPriorityIdle, 0, 128);
  80014d0:	4b48      	ldr	r3, [pc, #288]	@ (80015f4 <main+0x1f4>)
  80014d2:	f107 0474 	add.w	r4, r7, #116	@ 0x74
  80014d6:	461d      	mov	r5, r3
@@ -2268,7 +2268,7 @@ int main(void)
  80014da:	c40f      	stmia	r4!, {r0, r1, r2, r3}
  80014dc:	e895 0007 	ldmia.w	r5, {r0, r1, r2}
  80014e0:	e884 0007 	stmia.w	r4, {r0, r1, r2}
-  CO_meaHandle = osThreadCreate(osThread(CO_mea), NULL);
+  LCDHandle = osThreadCreate(osThread(LCD), NULL);
  80014e4:	f107 0374 	add.w	r3, r7, #116	@ 0x74
  80014e8:	2100      	movs	r1, #0
  80014ea:	4618      	mov	r0, r3
@@ -2277,8 +2277,8 @@ int main(void)
  80014f2:	4a41      	ldr	r2, [pc, #260]	@ (80015f8 <main+0x1f8>)
  80014f4:	6013      	str	r3, [r2, #0]
 
-  /* definition and creation of LCD_1 */
-  osThreadDef(LCD_1, StartLCD_1, osPriorityNormal, 0, 128);
+  /* definition and creation of CO2_mea */
+  osThreadDef(CO2_mea, StartCO2_mea, osPriorityIdle, 0, 128);
  80014f6:	4b41      	ldr	r3, [pc, #260]	@ (80015fc <main+0x1fc>)
  80014f8:	f107 0458 	add.w	r4, r7, #88	@ 0x58
  80014fc:	461d      	mov	r5, r3
@@ -2286,7 +2286,7 @@ int main(void)
  8001500:	c40f      	stmia	r4!, {r0, r1, r2, r3}
  8001502:	e895 0007 	ldmia.w	r5, {r0, r1, r2}
  8001506:	e884 0007 	stmia.w	r4, {r0, r1, r2}
-  LCD_1Handle = osThreadCreate(osThread(LCD_1), NULL);
+  CO2_meaHandle = osThreadCreate(osThread(CO2_mea), NULL);
  800150a:	f107 0358 	add.w	r3, r7, #88	@ 0x58
  800150e:	2100      	movs	r1, #0
  8001510:	4618      	mov	r0, r3
@@ -2295,8 +2295,8 @@ int main(void)
  8001518:	4a39      	ldr	r2, [pc, #228]	@ (8001600 <main+0x200>)
  800151a:	6013      	str	r3, [r2, #0]
 
-  /* definition and creation of Uart_Send */
-  osThreadDef(Uart_Send, StartUart_Send, osPriorityNormal, 0, 128);
+  /* definition and creation of TVOC_mea */
+  osThreadDef(TVOC_mea, StartTVOC_mea, osPriorityIdle, 0, 128);
  800151c:	4b39      	ldr	r3, [pc, #228]	@ (8001604 <main+0x204>)
  800151e:	f107 043c 	add.w	r4, r7, #60	@ 0x3c
  8001522:	461d      	mov	r5, r3
@@ -2304,7 +2304,7 @@ int main(void)
  8001526:	c40f      	stmia	r4!, {r0, r1, r2, r3}
  8001528:	e895 0007 	ldmia.w	r5, {r0, r1, r2}
  800152c:	e884 0007 	stmia.w	r4, {r0, r1, r2}
-  Uart_SendHandle = osThreadCreate(osThread(Uart_Send), NULL);
+  TVOC_meaHandle = osThreadCreate(osThread(TVOC_mea), NULL);
  8001530:	f107 033c 	add.w	r3, r7, #60	@ 0x3c
  8001534:	2100      	movs	r1, #0
  8001536:	4618      	mov	r0, r3
@@ -2313,8 +2313,8 @@ int main(void)
  800153e:	4a32      	ldr	r2, [pc, #200]	@ (8001608 <main+0x208>)
  8001540:	6013      	str	r3, [r2, #0]
 
-  /* definition and creation of Task_Isr */
-  osThreadDef(Task_Isr, StartTaskIsr, osPriorityRealtime, 0, 128);
+  /* definition and creation of UART_Send */
+  osThreadDef(UART_Send, StartUART_Send, osPriorityIdle, 0, 128);
  8001542:	4b32      	ldr	r3, [pc, #200]	@ (800160c <main+0x20c>)
  8001544:	f107 0420 	add.w	r4, r7, #32
  8001548:	461d      	mov	r5, r3
@@ -2322,7 +2322,7 @@ int main(void)
  800154c:	c40f      	stmia	r4!, {r0, r1, r2, r3}
  800154e:	e895 0007 	ldmia.w	r5, {r0, r1, r2}
  8001552:	e884 0007 	stmia.w	r4, {r0, r1, r2}
-  Task_IsrHandle = osThreadCreate(osThread(Task_Isr), NULL);
+  UART_SendHandle = osThreadCreate(osThread(UART_Send), NULL);
  8001556:	f107 0320 	add.w	r3, r7, #32
  800155a:	2100      	movs	r1, #0
  800155c:	4618      	mov	r0, r3
@@ -2331,8 +2331,8 @@ int main(void)
  8001564:	4a2a      	ldr	r2, [pc, #168]	@ (8001610 <main+0x210>)
  8001566:	6013      	str	r3, [r2, #0]
 
-  /* definition and creation of Warning */
-  osThreadDef(Warning, StartWarning, osPriorityNormal, 0, 128);
+  /* definition and creation of Task_ISR */
+  osThreadDef(Task_ISR, StartTask_ISR, osPriorityRealtime, 0, 128);
  8001568:	4b2a      	ldr	r3, [pc, #168]	@ (8001614 <main+0x214>)
  800156a:	1d3c      	adds	r4, r7, #4
  800156c:	461d      	mov	r5, r3
@@ -2340,7 +2340,7 @@ int main(void)
  8001570:	c40f      	stmia	r4!, {r0, r1, r2, r3}
  8001572:	e895 0007 	ldmia.w	r5, {r0, r1, r2}
  8001576:	e884 0007 	stmia.w	r4, {r0, r1, r2}
-  WarningHandle = osThreadCreate(osThread(Warning), NULL);
+  Task_ISRHandle = osThreadCreate(osThread(Task_ISR), NULL);
  800157a:	1d3b      	adds	r3, r7, #4
  800157c:	2100      	movs	r1, #0
  800157e:	4618      	mov	r0, r3
@@ -2352,32 +2352,32 @@ int main(void)
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
   task_ids[0] = CO_meaHandle;
- 800158a:	4b1b      	ldr	r3, [pc, #108]	@ (80015f8 <main+0x1f8>)
+ 800158a:	4b17      	ldr	r3, [pc, #92]	@ (80015e8 <main+0x1e8>)
  800158c:	681b      	ldr	r3, [r3, #0]
  800158e:	4a23      	ldr	r2, [pc, #140]	@ (800161c <main+0x21c>)
  8001590:	6013      	str	r3, [r2, #0]
   task_ids[1] = CO2_meaHandle;
- 8001592:	4b17      	ldr	r3, [pc, #92]	@ (80015f0 <main+0x1f0>)
+ 8001592:	4b1b      	ldr	r3, [pc, #108]	@ (8001600 <main+0x200>)
  8001594:	681b      	ldr	r3, [r3, #0]
  8001596:	4a21      	ldr	r2, [pc, #132]	@ (800161c <main+0x21c>)
  8001598:	6053      	str	r3, [r2, #4]
   task_ids[2] = TVOC_meaHandle;
- 800159a:	4b13      	ldr	r3, [pc, #76]	@ (80015e8 <main+0x1e8>)
+ 800159a:	4b1b      	ldr	r3, [pc, #108]	@ (8001608 <main+0x208>)
  800159c:	681b      	ldr	r3, [r3, #0]
  800159e:	4a1f      	ldr	r2, [pc, #124]	@ (800161c <main+0x21c>)
  80015a0:	6093      	str	r3, [r2, #8]
   task_ids[3] = WarningHandle;
- 80015a2:	4b1d      	ldr	r3, [pc, #116]	@ (8001618 <main+0x218>)
+ 80015a2:	4b13      	ldr	r3, [pc, #76]	@ (80015f0 <main+0x1f0>)
  80015a4:	681b      	ldr	r3, [r3, #0]
  80015a6:	4a1d      	ldr	r2, [pc, #116]	@ (800161c <main+0x21c>)
  80015a8:	60d3      	str	r3, [r2, #12]
-  task_ids[4] = LCD_1Handle;
- 80015aa:	4b15      	ldr	r3, [pc, #84]	@ (8001600 <main+0x200>)
+  task_ids[4] = LCDHandle;
+ 80015aa:	4b13      	ldr	r3, [pc, #76]	@ (80015f8 <main+0x1f8>)
  80015ac:	681b      	ldr	r3, [r3, #0]
  80015ae:	4a1b      	ldr	r2, [pc, #108]	@ (800161c <main+0x21c>)
  80015b0:	6113      	str	r3, [r2, #16]
-  task_ids[5] = Uart_SendHandle;
- 80015b2:	4b15      	ldr	r3, [pc, #84]	@ (8001608 <main+0x208>)
+  task_ids[5] = UART_SendHandle;
+ 80015b2:	4b17      	ldr	r3, [pc, #92]	@ (8001610 <main+0x210>)
  80015b4:	681b      	ldr	r3, [r3, #0]
  80015b6:	4a19      	ldr	r2, [pc, #100]	@ (800161c <main+0x21c>)
  80015b8:	6153      	str	r3, [r2, #20]
@@ -2406,19 +2406,19 @@ int main(void)
  80015d8:	20000498 	.word	0x20000498
  80015dc:	0800a4fc 	.word	0x0800a4fc
  80015e0:	20000494 	.word	0x20000494
- 80015e4:	0800a518 	.word	0x0800a518
+ 80015e4:	0800a514 	.word	0x0800a514
  80015e8:	20000478 	.word	0x20000478
- 80015ec:	0800a53c 	.word	0x0800a53c
+ 80015ec:	0800a538 	.word	0x0800a538
  80015f0:	2000047c 	.word	0x2000047c
- 80015f4:	0800a560 	.word	0x0800a560
+ 80015f4:	0800a558 	.word	0x0800a558
  80015f8:	20000480 	.word	0x20000480
- 80015fc:	0800a584 	.word	0x0800a584
+ 80015fc:	0800a57c 	.word	0x0800a57c
  8001600:	20000484 	.word	0x20000484
- 8001604:	0800a5ac 	.word	0x0800a5ac
+ 8001604:	0800a5a4 	.word	0x0800a5a4
  8001608:	20000488 	.word	0x20000488
- 800160c:	0800a5d4 	.word	0x0800a5d4
+ 800160c:	0800a5cc 	.word	0x0800a5cc
  8001610:	2000048c 	.word	0x2000048c
- 8001614:	0800a5f8 	.word	0x0800a5f8
+ 8001614:	0800a5f4 	.word	0x0800a5f4
  8001618:	20000490 	.word	0x20000490
  800161c:	2000049c 	.word	0x2000049c
 
@@ -3140,37 +3140,37 @@ void EDFScheduler() {
  8001a44:	20000000 	.word	0x20000000
  8001a48:	2000049c 	.word	0x2000049c
 
-08001a4c <StartTVOC_mea>:
-  * @param  argument: Not used
-  * @retval None
-  */
-/* USER CODE END Header_StartTVOC_mea */
-void StartTVOC_mea(void const * argument)
+08001a4c <StartCO_mea>:
+* @param argument: Not used
+* @retval None
+*/
+/* USER CODE END Header_StartCO_mea */
+void StartCO_mea(void const * argument)
 {
  8001a4c:	b580      	push	{r7, lr}
  8001a4e:	b08a      	sub	sp, #40	@ 0x28
  8001a50:	af00      	add	r7, sp, #0
  8001a52:	6078      	str	r0, [r7, #4]
   /* USER CODE BEGIN 5 */
-	SensorData data1;
-	snprintf(data1.sensorName, sizeof(data1.sensorName), "TVOC");
+	SensorData data3;
+	snprintf(data3.sensorName, sizeof(data3.sensorName), "CO");
  8001a54:	f107 030c 	add.w	r3, r7, #12
  8001a58:	3304      	adds	r3, #4
- 8001a5a:	4a19      	ldr	r2, [pc, #100]	@ (8001ac0 <StartTVOC_mea+0x74>)
+ 8001a5a:	4a19      	ldr	r2, [pc, #100]	@ (8001ac0 <StartCO_mea+0x74>)
  8001a5c:	210a      	movs	r1, #10
  8001a5e:	4618      	mov	r0, r3
  8001a60:	f007 f8ba 	bl	8008bd8 <sniprintf>
-	snprintf(data1.unit, sizeof(data1.unit), "ppb");
+	snprintf(data3.unit, sizeof(data3.unit), "ppm");
  8001a64:	f107 030c 	add.w	r3, r7, #12
- 8001a68:	4a16      	ldr	r2, [pc, #88]	@ (8001ac4 <StartTVOC_mea+0x78>)
+ 8001a68:	4a16      	ldr	r2, [pc, #88]	@ (8001ac4 <StartCO_mea+0x78>)
  8001a6a:	2104      	movs	r1, #4
  8001a6c:	4618      	mov	r0, r3
  8001a6e:	f007 f8b3 	bl	8008bd8 <sniprintf>
-	uint32_t task_index = 2;
- 8001a72:	2302      	movs	r3, #2
+	uint32_t task_index = 0;
+ 8001a72:	2300      	movs	r3, #0
  8001a74:	627b      	str	r3, [r7, #36]	@ 0x24
-	uint32_t execution_time = tasks[task_index].execution_time;  // Th�?i gian thực thi của task
- 8001a76:	4a14      	ldr	r2, [pc, #80]	@ (8001ac8 <StartTVOC_mea+0x7c>)
+	uint32_t execution_time = tasks[task_index].execution_time;  // Th ?i gian thực thi của task
+ 8001a76:	4a14      	ldr	r2, [pc, #80]	@ (8001ac8 <StartCO_mea+0x7c>)
  8001a78:	6a7b      	ldr	r3, [r7, #36]	@ 0x24
  8001a7a:	011b      	lsls	r3, r3, #4
  8001a7c:	4413      	add	r3, r2
@@ -3178,7 +3178,7 @@ void StartTVOC_mea(void const * argument)
  8001a80:	681b      	ldr	r3, [r3, #0]
  8001a82:	623b      	str	r3, [r7, #32]
 	uint32_t period = tasks[task_index].period;  // Chu kỳ của task
- 8001a84:	4a10      	ldr	r2, [pc, #64]	@ (8001ac8 <StartTVOC_mea+0x7c>)
+ 8001a84:	4a10      	ldr	r2, [pc, #64]	@ (8001ac8 <StartCO_mea+0x7c>)
  8001a86:	6a7b      	ldr	r3, [r7, #36]	@ 0x24
  8001a88:	011b      	lsls	r3, r3, #4
  8001a8a:	4413      	add	r3, r2
@@ -3188,15 +3188,14 @@ void StartTVOC_mea(void const * argument)
   /* Infinite loop */
   for(;;)
   {
-	  // Tiến hành đo TVOC
-	  TVOC_measure();
- 8001a92:	f7ff fbe7 	bl	8001264 <TVOC_measure>
-	  data1.value = Tvoc_ppb;
- 8001a96:	4b0d      	ldr	r3, [pc, #52]	@ (8001acc <StartTVOC_mea+0x80>)
+	  CO_measure();
+ 8001a92:	f7ff fba5 	bl	80011e0 <CO_measure>
+	  data3.value = CO_ppm;
+ 8001a96:	4b0d      	ldr	r3, [pc, #52]	@ (8001acc <StartCO_mea+0x80>)
  8001a98:	881b      	ldrh	r3, [r3, #0]
  8001a9a:	837b      	strh	r3, [r7, #26]
-	  osMessagePut(LCD_QueueHandle, (uint32_t)(uintptr_t)&data1, osWaitForever);
- 8001a9c:	4b0c      	ldr	r3, [pc, #48]	@ (8001ad0 <StartTVOC_mea+0x84>)
+	  osMessagePut(LCD_QueueHandle, (uint32_t)(uintptr_t)&data3, osWaitForever);
+ 8001a9c:	4b0c      	ldr	r3, [pc, #48]	@ (8001ad0 <StartCO_mea+0x84>)
  8001a9e:	681b      	ldr	r3, [r3, #0]
  8001aa0:	f107 010c 	add.w	r1, r7, #12
  8001aa4:	f04f 32ff 	mov.w	r2, #4294967295
@@ -3208,449 +3207,449 @@ void StartTVOC_mea(void const * argument)
  8001ab2:	1ad3      	subs	r3, r2, r3
  8001ab4:	4618      	mov	r0, r3
  8001ab6:	f004 fb17 	bl	80060e8 <osDelay>
-	  TVOC_measure();
+	  CO_measure();
  8001aba:	bf00      	nop
- 8001abc:	e7e9      	b.n	8001a92 <StartTVOC_mea+0x46>
+ 8001abc:	e7e9      	b.n	8001a92 <StartCO_mea+0x46>
  8001abe:	bf00      	nop
- 8001ac0:	0800a614 	.word	0x0800a614
- 8001ac4:	0800a61c 	.word	0x0800a61c
+ 8001ac0:	0800a610 	.word	0x0800a610
+ 8001ac4:	0800a614 	.word	0x0800a614
  8001ac8:	20000000 	.word	0x20000000
- 8001acc:	200004b6 	.word	0x200004b6
+ 8001acc:	200004c4 	.word	0x200004c4
  8001ad0:	20000494 	.word	0x20000494
 
-08001ad4 <StartCO2_mea>:
-* @param argument: Not used
-* @retval None
-*/
-/* USER CODE END Header_StartCO2_mea */
-void StartCO2_mea(void const * argument)
-{
- 8001ad4:	b580      	push	{r7, lr}
- 8001ad6:	b08a      	sub	sp, #40	@ 0x28
- 8001ad8:	af00      	add	r7, sp, #0
- 8001ada:	6078      	str	r0, [r7, #4]
-  /* USER CODE BEGIN StartCO2_mea */
-	SensorData data2;
-	snprintf(data2.sensorName, sizeof(data2.sensorName), "CO2");
- 8001adc:	f107 030c 	add.w	r3, r7, #12
- 8001ae0:	3304      	adds	r3, #4
- 8001ae2:	4a19      	ldr	r2, [pc, #100]	@ (8001b48 <StartCO2_mea+0x74>)
- 8001ae4:	210a      	movs	r1, #10
- 8001ae6:	4618      	mov	r0, r3
- 8001ae8:	f007 f876 	bl	8008bd8 <sniprintf>
-	snprintf(data2.unit, sizeof(data2.unit), "ppm");
- 8001aec:	f107 030c 	add.w	r3, r7, #12
- 8001af0:	4a16      	ldr	r2, [pc, #88]	@ (8001b4c <StartCO2_mea+0x78>)
- 8001af2:	2104      	movs	r1, #4
- 8001af4:	4618      	mov	r0, r3
- 8001af6:	f007 f86f 	bl	8008bd8 <sniprintf>
-	uint32_t task_index = 1;
- 8001afa:	2301      	movs	r3, #1
- 8001afc:	627b      	str	r3, [r7, #36]	@ 0x24
-	uint32_t execution_time = tasks[task_index].execution_time;
- 8001afe:	4a14      	ldr	r2, [pc, #80]	@ (8001b50 <StartCO2_mea+0x7c>)
- 8001b00:	6a7b      	ldr	r3, [r7, #36]	@ 0x24
- 8001b02:	011b      	lsls	r3, r3, #4
- 8001b04:	4413      	add	r3, r2
- 8001b06:	3304      	adds	r3, #4
- 8001b08:	681b      	ldr	r3, [r3, #0]
- 8001b0a:	623b      	str	r3, [r7, #32]
-	uint32_t period = tasks[task_index].period;
- 8001b0c:	4a10      	ldr	r2, [pc, #64]	@ (8001b50 <StartCO2_mea+0x7c>)
- 8001b0e:	6a7b      	ldr	r3, [r7, #36]	@ 0x24
- 8001b10:	011b      	lsls	r3, r3, #4
- 8001b12:	4413      	add	r3, r2
- 8001b14:	330c      	adds	r3, #12
- 8001b16:	681b      	ldr	r3, [r3, #0]
- 8001b18:	61fb      	str	r3, [r7, #28]
-  /* Infinite loop */
-  for(;;)
-  {
-	CO2_measure();
- 8001b1a:	f7ff fbb3 	bl	8001284 <CO2_measure>
-	data2.value = CO2_ppm;
- 8001b1e:	4b0d      	ldr	r3, [pc, #52]	@ (8001b54 <StartCO2_mea+0x80>)
- 8001b20:	881b      	ldrh	r3, [r3, #0]
- 8001b22:	837b      	strh	r3, [r7, #26]
-	osMessagePut(LCD_QueueHandle, (uint32_t)(uintptr_t)&data2, osWaitForever);
- 8001b24:	4b0c      	ldr	r3, [pc, #48]	@ (8001b58 <StartCO2_mea+0x84>)
- 8001b26:	681b      	ldr	r3, [r3, #0]
- 8001b28:	f107 010c 	add.w	r1, r7, #12
- 8001b2c:	f04f 32ff 	mov.w	r2, #4294967295
- 8001b30:	4618      	mov	r0, r3
- 8001b32:	f004 fbcb 	bl	80062cc <osMessagePut>
-	osDelay(period - execution_time);
- 8001b36:	69fa      	ldr	r2, [r7, #28]
- 8001b38:	6a3b      	ldr	r3, [r7, #32]
- 8001b3a:	1ad3      	subs	r3, r2, r3
- 8001b3c:	4618      	mov	r0, r3
- 8001b3e:	f004 fad3 	bl	80060e8 <osDelay>
-	CO2_measure();
- 8001b42:	bf00      	nop
- 8001b44:	e7e9      	b.n	8001b1a <StartCO2_mea+0x46>
- 8001b46:	bf00      	nop
- 8001b48:	0800a620 	.word	0x0800a620
- 8001b4c:	0800a624 	.word	0x0800a624
- 8001b50:	20000000 	.word	0x20000000
- 8001b54:	200004be 	.word	0x200004be
- 8001b58:	20000494 	.word	0x20000494
-
-08001b5c <StartCO_mea>:
-* @param argument: Not used
-* @retval None
-*/
-/* USER CODE END Header_StartCO_mea */
-void StartCO_mea(void const * argument)
-{
- 8001b5c:	b580      	push	{r7, lr}
- 8001b5e:	b08a      	sub	sp, #40	@ 0x28
- 8001b60:	af00      	add	r7, sp, #0
- 8001b62:	6078      	str	r0, [r7, #4]
-  /* USER CODE BEGIN StartCO_mea */
-	SensorData data3;
-	snprintf(data3.sensorName, sizeof(data3.sensorName), "CO");
- 8001b64:	f107 030c 	add.w	r3, r7, #12
- 8001b68:	3304      	adds	r3, #4
- 8001b6a:	4a19      	ldr	r2, [pc, #100]	@ (8001bd0 <StartCO_mea+0x74>)
- 8001b6c:	210a      	movs	r1, #10
- 8001b6e:	4618      	mov	r0, r3
- 8001b70:	f007 f832 	bl	8008bd8 <sniprintf>
-	snprintf(data3.unit, sizeof(data3.unit), "ppm");
- 8001b74:	f107 030c 	add.w	r3, r7, #12
- 8001b78:	4a16      	ldr	r2, [pc, #88]	@ (8001bd4 <StartCO_mea+0x78>)
- 8001b7a:	2104      	movs	r1, #4
- 8001b7c:	4618      	mov	r0, r3
- 8001b7e:	f007 f82b 	bl	8008bd8 <sniprintf>
-	uint32_t task_index = 0;
- 8001b82:	2300      	movs	r3, #0
- 8001b84:	627b      	str	r3, [r7, #36]	@ 0x24
-	uint32_t execution_time = tasks[task_index].execution_time;  // Th�?i gian thực thi của task
- 8001b86:	4a14      	ldr	r2, [pc, #80]	@ (8001bd8 <StartCO_mea+0x7c>)
- 8001b88:	6a7b      	ldr	r3, [r7, #36]	@ 0x24
- 8001b8a:	011b      	lsls	r3, r3, #4
- 8001b8c:	4413      	add	r3, r2
- 8001b8e:	3304      	adds	r3, #4
- 8001b90:	681b      	ldr	r3, [r3, #0]
- 8001b92:	623b      	str	r3, [r7, #32]
-	uint32_t period = tasks[task_index].period;  // Chu kỳ của task
- 8001b94:	4a10      	ldr	r2, [pc, #64]	@ (8001bd8 <StartCO_mea+0x7c>)
- 8001b96:	6a7b      	ldr	r3, [r7, #36]	@ 0x24
- 8001b98:	011b      	lsls	r3, r3, #4
- 8001b9a:	4413      	add	r3, r2
- 8001b9c:	330c      	adds	r3, #12
- 8001b9e:	681b      	ldr	r3, [r3, #0]
- 8001ba0:	61fb      	str	r3, [r7, #28]
-  /* Infinite loop */
-  for(;;)
-  {
-	CO_measure();
- 8001ba2:	f7ff fb1d 	bl	80011e0 <CO_measure>
-	data3.value = CO_ppm;
- 8001ba6:	4b0d      	ldr	r3, [pc, #52]	@ (8001bdc <StartCO_mea+0x80>)
- 8001ba8:	881b      	ldrh	r3, [r3, #0]
- 8001baa:	837b      	strh	r3, [r7, #26]
-	osMessagePut(LCD_QueueHandle, (uint32_t)(uintptr_t)&data3, osWaitForever);
- 8001bac:	4b0c      	ldr	r3, [pc, #48]	@ (8001be0 <StartCO_mea+0x84>)
- 8001bae:	681b      	ldr	r3, [r3, #0]
- 8001bb0:	f107 010c 	add.w	r1, r7, #12
- 8001bb4:	f04f 32ff 	mov.w	r2, #4294967295
- 8001bb8:	4618      	mov	r0, r3
- 8001bba:	f004 fb87 	bl	80062cc <osMessagePut>
-	osDelay(period - execution_time);
- 8001bbe:	69fa      	ldr	r2, [r7, #28]
- 8001bc0:	6a3b      	ldr	r3, [r7, #32]
- 8001bc2:	1ad3      	subs	r3, r2, r3
- 8001bc4:	4618      	mov	r0, r3
- 8001bc6:	f004 fa8f 	bl	80060e8 <osDelay>
-	CO_measure();
- 8001bca:	bf00      	nop
- 8001bcc:	e7e9      	b.n	8001ba2 <StartCO_mea+0x46>
- 8001bce:	bf00      	nop
- 8001bd0:	0800a628 	.word	0x0800a628
- 8001bd4:	0800a624 	.word	0x0800a624
- 8001bd8:	20000000 	.word	0x20000000
- 8001bdc:	200004c4 	.word	0x200004c4
- 8001be0:	20000494 	.word	0x20000494
-
-08001be4 <StartLCD_1>:
-* @param argument: Not used
-* @retval None
-*/
-/* USER CODE END Header_StartLCD_1 */
-void StartLCD_1(void const * argument)
-{
- 8001be4:	b590      	push	{r4, r7, lr}
- 8001be6:	b08d      	sub	sp, #52	@ 0x34
- 8001be8:	af00      	add	r7, sp, #0
- 8001bea:	6078      	str	r0, [r7, #4]
-  /* USER CODE BEGIN StartLCD_1 */
-	osEvent evt;
-	SensorData receivedData;
-	uint32_t task_index = 4;
- 8001bec:	2304      	movs	r3, #4
- 8001bee:	62fb      	str	r3, [r7, #44]	@ 0x2c
-	uint32_t execution_time = tasks[task_index].execution_time;  // Th�?i gian thực thi của task
- 8001bf0:	4a16      	ldr	r2, [pc, #88]	@ (8001c4c <StartLCD_1+0x68>)
- 8001bf2:	6afb      	ldr	r3, [r7, #44]	@ 0x2c
- 8001bf4:	011b      	lsls	r3, r3, #4
- 8001bf6:	4413      	add	r3, r2
- 8001bf8:	3304      	adds	r3, #4
- 8001bfa:	681b      	ldr	r3, [r3, #0]
- 8001bfc:	62bb      	str	r3, [r7, #40]	@ 0x28
-	uint32_t period = tasks[task_index].period;  // Chu kỳ của task
- 8001bfe:	4a13      	ldr	r2, [pc, #76]	@ (8001c4c <StartLCD_1+0x68>)
- 8001c00:	6afb      	ldr	r3, [r7, #44]	@ 0x2c
- 8001c02:	011b      	lsls	r3, r3, #4
- 8001c04:	4413      	add	r3, r2
- 8001c06:	330c      	adds	r3, #12
- 8001c08:	681b      	ldr	r3, [r3, #0]
- 8001c0a:	627b      	str	r3, [r7, #36]	@ 0x24
-  /* Infinite loop */
-  for(;;)
-  {
-	evt = osMessageGet(LCD_QueueHandle, osWaitForever);
- 8001c0c:	4b10      	ldr	r3, [pc, #64]	@ (8001c50 <StartLCD_1+0x6c>)
- 8001c0e:	6819      	ldr	r1, [r3, #0]
- 8001c10:	f107 0318 	add.w	r3, r7, #24
- 8001c14:	f04f 32ff 	mov.w	r2, #4294967295
- 8001c18:	4618      	mov	r0, r3
- 8001c1a:	f004 fb97 	bl	800634c <osMessageGet>
-	if (evt.status == osEventMessage)
- 8001c1e:	69bb      	ldr	r3, [r7, #24]
- 8001c20:	2b10      	cmp	r3, #16
- 8001c22:	d10c      	bne.n	8001c3e <StartLCD_1+0x5a>
-	{
-	   receivedData = *(SensorData *)evt.value.p;
- 8001c24:	69fb      	ldr	r3, [r7, #28]
- 8001c26:	f107 0408 	add.w	r4, r7, #8
- 8001c2a:	6818      	ldr	r0, [r3, #0]
- 8001c2c:	6859      	ldr	r1, [r3, #4]
- 8001c2e:	689a      	ldr	r2, [r3, #8]
- 8001c30:	68db      	ldr	r3, [r3, #12]
- 8001c32:	c40f      	stmia	r4!, {r0, r1, r2, r3}
-	   LCD_Display(receivedData);
- 8001c34:	f107 0308 	add.w	r3, r7, #8
- 8001c38:	cb0f      	ldmia	r3, {r0, r1, r2, r3}
- 8001c3a:	f7ff fb33 	bl	80012a4 <LCD_Display>
-	}
-    osDelay(period-execution_time);
- 8001c3e:	6a7a      	ldr	r2, [r7, #36]	@ 0x24
- 8001c40:	6abb      	ldr	r3, [r7, #40]	@ 0x28
- 8001c42:	1ad3      	subs	r3, r2, r3
- 8001c44:	4618      	mov	r0, r3
- 8001c46:	f004 fa4f 	bl	80060e8 <osDelay>
-	evt = osMessageGet(LCD_QueueHandle, osWaitForever);
- 8001c4a:	e7df      	b.n	8001c0c <StartLCD_1+0x28>
- 8001c4c:	20000000 	.word	0x20000000
- 8001c50:	20000494 	.word	0x20000494
-
-08001c54 <StartUart_Send>:
-* @param argument: Not used
-* @retval None
-*/
-/* USER CODE END Header_StartUart_Send */
-void StartUart_Send(void const * argument)
-{
- 8001c54:	b580      	push	{r7, lr}
- 8001c56:	b086      	sub	sp, #24
- 8001c58:	af00      	add	r7, sp, #0
- 8001c5a:	6078      	str	r0, [r7, #4]
-  /* USER CODE BEGIN StartUart_Send */
-	uint32_t task_index = 5;
- 8001c5c:	2305      	movs	r3, #5
- 8001c5e:	617b      	str	r3, [r7, #20]
-	uint32_t execution_time = tasks[task_index].execution_time;  // Th�?i gian thực thi của task
- 8001c60:	4a0b      	ldr	r2, [pc, #44]	@ (8001c90 <StartUart_Send+0x3c>)
- 8001c62:	697b      	ldr	r3, [r7, #20]
- 8001c64:	011b      	lsls	r3, r3, #4
- 8001c66:	4413      	add	r3, r2
- 8001c68:	3304      	adds	r3, #4
- 8001c6a:	681b      	ldr	r3, [r3, #0]
- 8001c6c:	613b      	str	r3, [r7, #16]
-	uint32_t period = tasks[task_index].period;  // Chu kỳ của task
- 8001c6e:	4a08      	ldr	r2, [pc, #32]	@ (8001c90 <StartUart_Send+0x3c>)
- 8001c70:	697b      	ldr	r3, [r7, #20]
- 8001c72:	011b      	lsls	r3, r3, #4
- 8001c74:	4413      	add	r3, r2
- 8001c76:	330c      	adds	r3, #12
- 8001c78:	681b      	ldr	r3, [r3, #0]
- 8001c7a:	60fb      	str	r3, [r7, #12]
-  /* Infinite loop */
-  for(;;)
-  {
-	Uart_Send();
- 8001c7c:	f7ff fb44 	bl	8001308 <Uart_Send>
-    osDelay(period-execution_time);
- 8001c80:	68fa      	ldr	r2, [r7, #12]
- 8001c82:	693b      	ldr	r3, [r7, #16]
- 8001c84:	1ad3      	subs	r3, r2, r3
- 8001c86:	4618      	mov	r0, r3
- 8001c88:	f004 fa2e 	bl	80060e8 <osDelay>
-	Uart_Send();
- 8001c8c:	bf00      	nop
- 8001c8e:	e7f5      	b.n	8001c7c <StartUart_Send+0x28>
- 8001c90:	20000000 	.word	0x20000000
-
-08001c94 <StartTaskIsr>:
-* @param argument: Not used
-* @retval None
-*/
-/* USER CODE END Header_StartTaskIsr */
-void StartTaskIsr(void const * argument)
-{
- 8001c94:	b580      	push	{r7, lr}
- 8001c96:	b082      	sub	sp, #8
- 8001c98:	af00      	add	r7, sp, #0
- 8001c9a:	6078      	str	r0, [r7, #4]
-  /* USER CODE BEGIN StartTaskIsr */
-  /* Infinite loop */
-  for(;;)
-  {
-	 osSemaphoreWait(BinarySem_ISRHandle,osWaitForever);
- 8001c9c:	4b2a      	ldr	r3, [pc, #168]	@ (8001d48 <StartTaskIsr+0xb4>)
- 8001c9e:	681b      	ldr	r3, [r3, #0]
- 8001ca0:	f04f 31ff 	mov.w	r1, #4294967295
- 8001ca4:	4618      	mov	r0, r3
- 8001ca6:	f004 fa65 	bl	8006174 <osSemaphoreWait>
-	 if((char)Uart_RX_Buf[0] == '3')
- 8001caa:	4b28      	ldr	r3, [pc, #160]	@ (8001d4c <StartTaskIsr+0xb8>)
- 8001cac:	781b      	ldrb	r3, [r3, #0]
- 8001cae:	2b33      	cmp	r3, #51	@ 0x33
- 8001cb0:	d114      	bne.n	8001cdc <StartTaskIsr+0x48>
-	 {
-		TVOC_measure();
- 8001cb2:	f7ff fad7 	bl	8001264 <TVOC_measure>
-		sprintf((char*)Uart_TX_Buf, "TVOC:%d ppb\r\n",(int)Tvoc_ppb);
- 8001cb6:	4b26      	ldr	r3, [pc, #152]	@ (8001d50 <StartTaskIsr+0xbc>)
- 8001cb8:	881b      	ldrh	r3, [r3, #0]
- 8001cba:	461a      	mov	r2, r3
- 8001cbc:	4925      	ldr	r1, [pc, #148]	@ (8001d54 <StartTaskIsr+0xc0>)
- 8001cbe:	4826      	ldr	r0, [pc, #152]	@ (8001d58 <StartTaskIsr+0xc4>)
- 8001cc0:	f006 ffbe 	bl	8008c40 <siprintf>
-		HAL_UART_Transmit(&huart1,(uint8_t*) Uart_TX_Buf,strlen((char*)Uart_TX_Buf) , HAL_MAX_DELAY);
- 8001cc4:	4824      	ldr	r0, [pc, #144]	@ (8001d58 <StartTaskIsr+0xc4>)
- 8001cc6:	f7fe fa43 	bl	8000150 <strlen>
- 8001cca:	4603      	mov	r3, r0
- 8001ccc:	b29a      	uxth	r2, r3
- 8001cce:	f04f 33ff 	mov.w	r3, #4294967295
- 8001cd2:	4921      	ldr	r1, [pc, #132]	@ (8001d58 <StartTaskIsr+0xc4>)
- 8001cd4:	4821      	ldr	r0, [pc, #132]	@ (8001d5c <StartTaskIsr+0xc8>)
- 8001cd6:	f003 fb4d 	bl	8005374 <HAL_UART_Transmit>
- 8001cda:	e030      	b.n	8001d3e <StartTaskIsr+0xaa>
-	 }
-	 else if((char)Uart_RX_Buf[0]  == '2')
- 8001cdc:	4b1b      	ldr	r3, [pc, #108]	@ (8001d4c <StartTaskIsr+0xb8>)
- 8001cde:	781b      	ldrb	r3, [r3, #0]
- 8001ce0:	2b32      	cmp	r3, #50	@ 0x32
- 8001ce2:	d114      	bne.n	8001d0e <StartTaskIsr+0x7a>
-	 {
-		CO2_measure();
- 8001ce4:	f7ff face 	bl	8001284 <CO2_measure>
-		sprintf((char*)Uart_TX_Buf, "CO2:%d ppm\r\n",(int)CO2_ppm);
- 8001ce8:	4b1d      	ldr	r3, [pc, #116]	@ (8001d60 <StartTaskIsr+0xcc>)
- 8001cea:	881b      	ldrh	r3, [r3, #0]
- 8001cec:	461a      	mov	r2, r3
- 8001cee:	491d      	ldr	r1, [pc, #116]	@ (8001d64 <StartTaskIsr+0xd0>)
- 8001cf0:	4819      	ldr	r0, [pc, #100]	@ (8001d58 <StartTaskIsr+0xc4>)
- 8001cf2:	f006 ffa5 	bl	8008c40 <siprintf>
-		HAL_UART_Transmit(&huart1,(uint8_t*) Uart_TX_Buf,strlen((char*)Uart_TX_Buf) , HAL_MAX_DELAY);
- 8001cf6:	4818      	ldr	r0, [pc, #96]	@ (8001d58 <StartTaskIsr+0xc4>)
- 8001cf8:	f7fe fa2a 	bl	8000150 <strlen>
- 8001cfc:	4603      	mov	r3, r0
- 8001cfe:	b29a      	uxth	r2, r3
- 8001d00:	f04f 33ff 	mov.w	r3, #4294967295
- 8001d04:	4914      	ldr	r1, [pc, #80]	@ (8001d58 <StartTaskIsr+0xc4>)
- 8001d06:	4815      	ldr	r0, [pc, #84]	@ (8001d5c <StartTaskIsr+0xc8>)
- 8001d08:	f003 fb34 	bl	8005374 <HAL_UART_Transmit>
- 8001d0c:	e017      	b.n	8001d3e <StartTaskIsr+0xaa>
-	 }
-	 else if((char)Uart_RX_Buf[0]  == '1')
- 8001d0e:	4b0f      	ldr	r3, [pc, #60]	@ (8001d4c <StartTaskIsr+0xb8>)
- 8001d10:	781b      	ldrb	r3, [r3, #0]
- 8001d12:	2b31      	cmp	r3, #49	@ 0x31
- 8001d14:	d113      	bne.n	8001d3e <StartTaskIsr+0xaa>
-	 {
-		CO_measure();
- 8001d16:	f7ff fa63 	bl	80011e0 <CO_measure>
-		sprintf((char*)Uart_TX_Buf, "CO:%d ppm\r\n",(int)CO_ppm);
- 8001d1a:	4b13      	ldr	r3, [pc, #76]	@ (8001d68 <StartTaskIsr+0xd4>)
- 8001d1c:	881b      	ldrh	r3, [r3, #0]
- 8001d1e:	461a      	mov	r2, r3
- 8001d20:	4912      	ldr	r1, [pc, #72]	@ (8001d6c <StartTaskIsr+0xd8>)
- 8001d22:	480d      	ldr	r0, [pc, #52]	@ (8001d58 <StartTaskIsr+0xc4>)
- 8001d24:	f006 ff8c 	bl	8008c40 <siprintf>
-		HAL_UART_Transmit(&huart1,(uint8_t*) Uart_TX_Buf,strlen((char*)Uart_TX_Buf) , HAL_MAX_DELAY);
- 8001d28:	480b      	ldr	r0, [pc, #44]	@ (8001d58 <StartTaskIsr+0xc4>)
- 8001d2a:	f7fe fa11 	bl	8000150 <strlen>
- 8001d2e:	4603      	mov	r3, r0
- 8001d30:	b29a      	uxth	r2, r3
- 8001d32:	f04f 33ff 	mov.w	r3, #4294967295
- 8001d36:	4908      	ldr	r1, [pc, #32]	@ (8001d58 <StartTaskIsr+0xc4>)
- 8001d38:	4808      	ldr	r0, [pc, #32]	@ (8001d5c <StartTaskIsr+0xc8>)
- 8001d3a:	f003 fb1b 	bl	8005374 <HAL_UART_Transmit>
-	 }
-	 osDelay(1000);
- 8001d3e:	f44f 707a 	mov.w	r0, #1000	@ 0x3e8
- 8001d42:	f004 f9d1 	bl	80060e8 <osDelay>
-	 osSemaphoreWait(BinarySem_ISRHandle,osWaitForever);
- 8001d46:	e7a9      	b.n	8001c9c <StartTaskIsr+0x8>
- 8001d48:	20000498 	.word	0x20000498
- 8001d4c:	20000500 	.word	0x20000500
- 8001d50:	200004b6 	.word	0x200004b6
- 8001d54:	0800a4c4 	.word	0x0800a4c4
- 8001d58:	200004d8 	.word	0x200004d8
- 8001d5c:	20000430 	.word	0x20000430
- 8001d60:	200004be 	.word	0x200004be
- 8001d64:	0800a4e0 	.word	0x0800a4e0
- 8001d68:	200004c4 	.word	0x200004c4
- 8001d6c:	0800a4d4 	.word	0x0800a4d4
-
-08001d70 <StartWarning>:
+08001ad4 <StartWarning>:
 * @param argument: Not used
 * @retval None
 */
 /* USER CODE END Header_StartWarning */
 void StartWarning(void const * argument)
 {
- 8001d70:	b580      	push	{r7, lr}
- 8001d72:	b086      	sub	sp, #24
- 8001d74:	af00      	add	r7, sp, #0
- 8001d76:	6078      	str	r0, [r7, #4]
+ 8001ad4:	b580      	push	{r7, lr}
+ 8001ad6:	b086      	sub	sp, #24
+ 8001ad8:	af00      	add	r7, sp, #0
+ 8001ada:	6078      	str	r0, [r7, #4]
   /* USER CODE BEGIN StartWarning */
 	uint32_t task_index = 3;
- 8001d78:	2303      	movs	r3, #3
- 8001d7a:	617b      	str	r3, [r7, #20]
-	uint32_t execution_time = tasks[task_index].execution_time;  // Th�?i gian thực thi của task
- 8001d7c:	4a0b      	ldr	r2, [pc, #44]	@ (8001dac <StartWarning+0x3c>)
- 8001d7e:	697b      	ldr	r3, [r7, #20]
- 8001d80:	011b      	lsls	r3, r3, #4
- 8001d82:	4413      	add	r3, r2
- 8001d84:	3304      	adds	r3, #4
- 8001d86:	681b      	ldr	r3, [r3, #0]
- 8001d88:	613b      	str	r3, [r7, #16]
+ 8001adc:	2303      	movs	r3, #3
+ 8001ade:	617b      	str	r3, [r7, #20]
+	uint32_t execution_time = tasks[task_index].execution_time;  // Th ?i gian thực thi của task
+ 8001ae0:	4a0b      	ldr	r2, [pc, #44]	@ (8001b10 <StartWarning+0x3c>)
+ 8001ae2:	697b      	ldr	r3, [r7, #20]
+ 8001ae4:	011b      	lsls	r3, r3, #4
+ 8001ae6:	4413      	add	r3, r2
+ 8001ae8:	3304      	adds	r3, #4
+ 8001aea:	681b      	ldr	r3, [r3, #0]
+ 8001aec:	613b      	str	r3, [r7, #16]
 	uint32_t period = tasks[task_index].period;  // Chu kỳ của task
- 8001d8a:	4a08      	ldr	r2, [pc, #32]	@ (8001dac <StartWarning+0x3c>)
- 8001d8c:	697b      	ldr	r3, [r7, #20]
- 8001d8e:	011b      	lsls	r3, r3, #4
- 8001d90:	4413      	add	r3, r2
- 8001d92:	330c      	adds	r3, #12
- 8001d94:	681b      	ldr	r3, [r3, #0]
- 8001d96:	60fb      	str	r3, [r7, #12]
+ 8001aee:	4a08      	ldr	r2, [pc, #32]	@ (8001b10 <StartWarning+0x3c>)
+ 8001af0:	697b      	ldr	r3, [r7, #20]
+ 8001af2:	011b      	lsls	r3, r3, #4
+ 8001af4:	4413      	add	r3, r2
+ 8001af6:	330c      	adds	r3, #12
+ 8001af8:	681b      	ldr	r3, [r3, #0]
+ 8001afa:	60fb      	str	r3, [r7, #12]
   /* Infinite loop */
   for(;;)
   {
 	Warning();
- 8001d98:	f000 fa82 	bl	80022a0 <Warning>
+ 8001afc:	f000 fbd0 	bl	80022a0 <Warning>
     osDelay(period-execution_time);
- 8001d9c:	68fa      	ldr	r2, [r7, #12]
- 8001d9e:	693b      	ldr	r3, [r7, #16]
- 8001da0:	1ad3      	subs	r3, r2, r3
- 8001da2:	4618      	mov	r0, r3
- 8001da4:	f004 f9a0 	bl	80060e8 <osDelay>
+ 8001b00:	68fa      	ldr	r2, [r7, #12]
+ 8001b02:	693b      	ldr	r3, [r7, #16]
+ 8001b04:	1ad3      	subs	r3, r2, r3
+ 8001b06:	4618      	mov	r0, r3
+ 8001b08:	f004 faee 	bl	80060e8 <osDelay>
 	Warning();
- 8001da8:	bf00      	nop
- 8001daa:	e7f5      	b.n	8001d98 <StartWarning+0x28>
- 8001dac:	20000000 	.word	0x20000000
+ 8001b0c:	bf00      	nop
+ 8001b0e:	e7f5      	b.n	8001afc <StartWarning+0x28>
+ 8001b10:	20000000 	.word	0x20000000
+
+08001b14 <StartLCD>:
+* @param argument: Not used
+* @retval None
+*/
+/* USER CODE END Header_StartLCD */
+void StartLCD(void const * argument)
+{
+ 8001b14:	b590      	push	{r4, r7, lr}
+ 8001b16:	b08d      	sub	sp, #52	@ 0x34
+ 8001b18:	af00      	add	r7, sp, #0
+ 8001b1a:	6078      	str	r0, [r7, #4]
+  /* USER CODE BEGIN StartLCD */
+	osEvent evt;
+	SensorData receivedData;
+	uint32_t task_index = 4;
+ 8001b1c:	2304      	movs	r3, #4
+ 8001b1e:	62fb      	str	r3, [r7, #44]	@ 0x2c
+	uint32_t execution_time = tasks[task_index].execution_time;  // Th ?i gian thực thi của task
+ 8001b20:	4a16      	ldr	r2, [pc, #88]	@ (8001b7c <StartLCD+0x68>)
+ 8001b22:	6afb      	ldr	r3, [r7, #44]	@ 0x2c
+ 8001b24:	011b      	lsls	r3, r3, #4
+ 8001b26:	4413      	add	r3, r2
+ 8001b28:	3304      	adds	r3, #4
+ 8001b2a:	681b      	ldr	r3, [r3, #0]
+ 8001b2c:	62bb      	str	r3, [r7, #40]	@ 0x28
+	uint32_t period = tasks[task_index].period;  // Chu kỳ của task
+ 8001b2e:	4a13      	ldr	r2, [pc, #76]	@ (8001b7c <StartLCD+0x68>)
+ 8001b30:	6afb      	ldr	r3, [r7, #44]	@ 0x2c
+ 8001b32:	011b      	lsls	r3, r3, #4
+ 8001b34:	4413      	add	r3, r2
+ 8001b36:	330c      	adds	r3, #12
+ 8001b38:	681b      	ldr	r3, [r3, #0]
+ 8001b3a:	627b      	str	r3, [r7, #36]	@ 0x24
+  /* Infinite loop */
+  for(;;)
+  {
+	evt = osMessageGet(LCD_QueueHandle, osWaitForever);
+ 8001b3c:	4b10      	ldr	r3, [pc, #64]	@ (8001b80 <StartLCD+0x6c>)
+ 8001b3e:	6819      	ldr	r1, [r3, #0]
+ 8001b40:	f107 0318 	add.w	r3, r7, #24
+ 8001b44:	f04f 32ff 	mov.w	r2, #4294967295
+ 8001b48:	4618      	mov	r0, r3
+ 8001b4a:	f004 fbff 	bl	800634c <osMessageGet>
+	if (evt.status == osEventMessage)
+ 8001b4e:	69bb      	ldr	r3, [r7, #24]
+ 8001b50:	2b10      	cmp	r3, #16
+ 8001b52:	d10c      	bne.n	8001b6e <StartLCD+0x5a>
+	{
+	   receivedData = *(SensorData *)evt.value.p;
+ 8001b54:	69fb      	ldr	r3, [r7, #28]
+ 8001b56:	f107 0408 	add.w	r4, r7, #8
+ 8001b5a:	6818      	ldr	r0, [r3, #0]
+ 8001b5c:	6859      	ldr	r1, [r3, #4]
+ 8001b5e:	689a      	ldr	r2, [r3, #8]
+ 8001b60:	68db      	ldr	r3, [r3, #12]
+ 8001b62:	c40f      	stmia	r4!, {r0, r1, r2, r3}
+	   LCD_Display(receivedData);
+ 8001b64:	f107 0308 	add.w	r3, r7, #8
+ 8001b68:	cb0f      	ldmia	r3, {r0, r1, r2, r3}
+ 8001b6a:	f7ff fb9b 	bl	80012a4 <LCD_Display>
+	}
+    osDelay(period-execution_time);
+ 8001b6e:	6a7a      	ldr	r2, [r7, #36]	@ 0x24
+ 8001b70:	6abb      	ldr	r3, [r7, #40]	@ 0x28
+ 8001b72:	1ad3      	subs	r3, r2, r3
+ 8001b74:	4618      	mov	r0, r3
+ 8001b76:	f004 fab7 	bl	80060e8 <osDelay>
+	evt = osMessageGet(LCD_QueueHandle, osWaitForever);
+ 8001b7a:	e7df      	b.n	8001b3c <StartLCD+0x28>
+ 8001b7c:	20000000 	.word	0x20000000
+ 8001b80:	20000494 	.word	0x20000494
+
+08001b84 <StartCO2_mea>:
+* @param argument: Not used
+* @retval None
+*/
+/* USER CODE END Header_StartCO2_mea */
+void StartCO2_mea(void const * argument)
+{
+ 8001b84:	b580      	push	{r7, lr}
+ 8001b86:	b08a      	sub	sp, #40	@ 0x28
+ 8001b88:	af00      	add	r7, sp, #0
+ 8001b8a:	6078      	str	r0, [r7, #4]
+  /* USER CODE BEGIN StartCO2_mea */
+	SensorData data2;
+	snprintf(data2.sensorName, sizeof(data2.sensorName), "CO2");
+ 8001b8c:	f107 030c 	add.w	r3, r7, #12
+ 8001b90:	3304      	adds	r3, #4
+ 8001b92:	4a19      	ldr	r2, [pc, #100]	@ (8001bf8 <StartCO2_mea+0x74>)
+ 8001b94:	210a      	movs	r1, #10
+ 8001b96:	4618      	mov	r0, r3
+ 8001b98:	f007 f81e 	bl	8008bd8 <sniprintf>
+	snprintf(data2.unit, sizeof(data2.unit), "ppm");
+ 8001b9c:	f107 030c 	add.w	r3, r7, #12
+ 8001ba0:	4a16      	ldr	r2, [pc, #88]	@ (8001bfc <StartCO2_mea+0x78>)
+ 8001ba2:	2104      	movs	r1, #4
+ 8001ba4:	4618      	mov	r0, r3
+ 8001ba6:	f007 f817 	bl	8008bd8 <sniprintf>
+	uint32_t task_index = 1;
+ 8001baa:	2301      	movs	r3, #1
+ 8001bac:	627b      	str	r3, [r7, #36]	@ 0x24
+	uint32_t execution_time = tasks[task_index].execution_time;  // Th ?i gian thực thi của task
+ 8001bae:	4a14      	ldr	r2, [pc, #80]	@ (8001c00 <StartCO2_mea+0x7c>)
+ 8001bb0:	6a7b      	ldr	r3, [r7, #36]	@ 0x24
+ 8001bb2:	011b      	lsls	r3, r3, #4
+ 8001bb4:	4413      	add	r3, r2
+ 8001bb6:	3304      	adds	r3, #4
+ 8001bb8:	681b      	ldr	r3, [r3, #0]
+ 8001bba:	623b      	str	r3, [r7, #32]
+	uint32_t period = tasks[task_index].period;  // Chu kỳ của task
+ 8001bbc:	4a10      	ldr	r2, [pc, #64]	@ (8001c00 <StartCO2_mea+0x7c>)
+ 8001bbe:	6a7b      	ldr	r3, [r7, #36]	@ 0x24
+ 8001bc0:	011b      	lsls	r3, r3, #4
+ 8001bc2:	4413      	add	r3, r2
+ 8001bc4:	330c      	adds	r3, #12
+ 8001bc6:	681b      	ldr	r3, [r3, #0]
+ 8001bc8:	61fb      	str	r3, [r7, #28]
+  /* Infinite loop */
+  for(;;)
+  {
+	CO2_measure();
+ 8001bca:	f7ff fb5b 	bl	8001284 <CO2_measure>
+	data2.value = CO2_ppm;
+ 8001bce:	4b0d      	ldr	r3, [pc, #52]	@ (8001c04 <StartCO2_mea+0x80>)
+ 8001bd0:	881b      	ldrh	r3, [r3, #0]
+ 8001bd2:	837b      	strh	r3, [r7, #26]
+	osMessagePut(LCD_QueueHandle, (uint32_t)(uintptr_t)&data2, osWaitForever);
+ 8001bd4:	4b0c      	ldr	r3, [pc, #48]	@ (8001c08 <StartCO2_mea+0x84>)
+ 8001bd6:	681b      	ldr	r3, [r3, #0]
+ 8001bd8:	f107 010c 	add.w	r1, r7, #12
+ 8001bdc:	f04f 32ff 	mov.w	r2, #4294967295
+ 8001be0:	4618      	mov	r0, r3
+ 8001be2:	f004 fb73 	bl	80062cc <osMessagePut>
+	osDelay(period - execution_time);
+ 8001be6:	69fa      	ldr	r2, [r7, #28]
+ 8001be8:	6a3b      	ldr	r3, [r7, #32]
+ 8001bea:	1ad3      	subs	r3, r2, r3
+ 8001bec:	4618      	mov	r0, r3
+ 8001bee:	f004 fa7b 	bl	80060e8 <osDelay>
+	CO2_measure();
+ 8001bf2:	bf00      	nop
+ 8001bf4:	e7e9      	b.n	8001bca <StartCO2_mea+0x46>
+ 8001bf6:	bf00      	nop
+ 8001bf8:	0800a618 	.word	0x0800a618
+ 8001bfc:	0800a614 	.word	0x0800a614
+ 8001c00:	20000000 	.word	0x20000000
+ 8001c04:	200004be 	.word	0x200004be
+ 8001c08:	20000494 	.word	0x20000494
+
+08001c0c <StartTVOC_mea>:
+  * @param  argument: Not used
+  * @retval None
+  */
+/* USER CODE END Header_StartTVOC_mea */
+void StartTVOC_mea(void const * argument)
+{
+ 8001c0c:	b580      	push	{r7, lr}
+ 8001c0e:	b08a      	sub	sp, #40	@ 0x28
+ 8001c10:	af00      	add	r7, sp, #0
+ 8001c12:	6078      	str	r0, [r7, #4]
+  /* USER CODE BEGIN StartTVOC_mea */
+	SensorData data1;
+	snprintf(data1.sensorName, sizeof(data1.sensorName), "TVOC");
+ 8001c14:	f107 030c 	add.w	r3, r7, #12
+ 8001c18:	3304      	adds	r3, #4
+ 8001c1a:	4a19      	ldr	r2, [pc, #100]	@ (8001c80 <StartTVOC_mea+0x74>)
+ 8001c1c:	210a      	movs	r1, #10
+ 8001c1e:	4618      	mov	r0, r3
+ 8001c20:	f006 ffda 	bl	8008bd8 <sniprintf>
+	snprintf(data1.unit, sizeof(data1.unit), "ppb");
+ 8001c24:	f107 030c 	add.w	r3, r7, #12
+ 8001c28:	4a16      	ldr	r2, [pc, #88]	@ (8001c84 <StartTVOC_mea+0x78>)
+ 8001c2a:	2104      	movs	r1, #4
+ 8001c2c:	4618      	mov	r0, r3
+ 8001c2e:	f006 ffd3 	bl	8008bd8 <sniprintf>
+	uint32_t task_index = 2;
+ 8001c32:	2302      	movs	r3, #2
+ 8001c34:	627b      	str	r3, [r7, #36]	@ 0x24
+	uint32_t execution_time = tasks[task_index].execution_time;  // Th ?i gian thực thi của task
+ 8001c36:	4a14      	ldr	r2, [pc, #80]	@ (8001c88 <StartTVOC_mea+0x7c>)
+ 8001c38:	6a7b      	ldr	r3, [r7, #36]	@ 0x24
+ 8001c3a:	011b      	lsls	r3, r3, #4
+ 8001c3c:	4413      	add	r3, r2
+ 8001c3e:	3304      	adds	r3, #4
+ 8001c40:	681b      	ldr	r3, [r3, #0]
+ 8001c42:	623b      	str	r3, [r7, #32]
+	uint32_t period = tasks[task_index].period;  // Chu kỳ của task
+ 8001c44:	4a10      	ldr	r2, [pc, #64]	@ (8001c88 <StartTVOC_mea+0x7c>)
+ 8001c46:	6a7b      	ldr	r3, [r7, #36]	@ 0x24
+ 8001c48:	011b      	lsls	r3, r3, #4
+ 8001c4a:	4413      	add	r3, r2
+ 8001c4c:	330c      	adds	r3, #12
+ 8001c4e:	681b      	ldr	r3, [r3, #0]
+ 8001c50:	61fb      	str	r3, [r7, #28]
+  /* Infinite loop */
+  for(;;)
+  {
+	  TVOC_measure();
+ 8001c52:	f7ff fb07 	bl	8001264 <TVOC_measure>
+	  data1.value = Tvoc_ppb;
+ 8001c56:	4b0d      	ldr	r3, [pc, #52]	@ (8001c8c <StartTVOC_mea+0x80>)
+ 8001c58:	881b      	ldrh	r3, [r3, #0]
+ 8001c5a:	837b      	strh	r3, [r7, #26]
+	  osMessagePut(LCD_QueueHandle, (uint32_t)(uintptr_t)&data1, osWaitForever);
+ 8001c5c:	4b0c      	ldr	r3, [pc, #48]	@ (8001c90 <StartTVOC_mea+0x84>)
+ 8001c5e:	681b      	ldr	r3, [r3, #0]
+ 8001c60:	f107 010c 	add.w	r1, r7, #12
+ 8001c64:	f04f 32ff 	mov.w	r2, #4294967295
+ 8001c68:	4618      	mov	r0, r3
+ 8001c6a:	f004 fb2f 	bl	80062cc <osMessagePut>
+	  osDelay(period - execution_time);
+ 8001c6e:	69fa      	ldr	r2, [r7, #28]
+ 8001c70:	6a3b      	ldr	r3, [r7, #32]
+ 8001c72:	1ad3      	subs	r3, r2, r3
+ 8001c74:	4618      	mov	r0, r3
+ 8001c76:	f004 fa37 	bl	80060e8 <osDelay>
+	  TVOC_measure();
+ 8001c7a:	bf00      	nop
+ 8001c7c:	e7e9      	b.n	8001c52 <StartTVOC_mea+0x46>
+ 8001c7e:	bf00      	nop
+ 8001c80:	0800a61c 	.word	0x0800a61c
+ 8001c84:	0800a624 	.word	0x0800a624
+ 8001c88:	20000000 	.word	0x20000000
+ 8001c8c:	200004b6 	.word	0x200004b6
+ 8001c90:	20000494 	.word	0x20000494
+
+08001c94 <StartUART_Send>:
+* @param argument: Not used
+* @retval None
+*/
+/* USER CODE END Header_StartUART_Send */
+void StartUART_Send(void const * argument)
+{
+ 8001c94:	b580      	push	{r7, lr}
+ 8001c96:	b086      	sub	sp, #24
+ 8001c98:	af00      	add	r7, sp, #0
+ 8001c9a:	6078      	str	r0, [r7, #4]
+  /* USER CODE BEGIN StartUART_Send */
+	uint32_t task_index = 5;
+ 8001c9c:	2305      	movs	r3, #5
+ 8001c9e:	617b      	str	r3, [r7, #20]
+	uint32_t execution_time = tasks[task_index].execution_time;  // Th ?i gian thực thi của task
+ 8001ca0:	4a0b      	ldr	r2, [pc, #44]	@ (8001cd0 <StartUART_Send+0x3c>)
+ 8001ca2:	697b      	ldr	r3, [r7, #20]
+ 8001ca4:	011b      	lsls	r3, r3, #4
+ 8001ca6:	4413      	add	r3, r2
+ 8001ca8:	3304      	adds	r3, #4
+ 8001caa:	681b      	ldr	r3, [r3, #0]
+ 8001cac:	613b      	str	r3, [r7, #16]
+	uint32_t period = tasks[task_index].period;  // Chu kỳ của task
+ 8001cae:	4a08      	ldr	r2, [pc, #32]	@ (8001cd0 <StartUART_Send+0x3c>)
+ 8001cb0:	697b      	ldr	r3, [r7, #20]
+ 8001cb2:	011b      	lsls	r3, r3, #4
+ 8001cb4:	4413      	add	r3, r2
+ 8001cb6:	330c      	adds	r3, #12
+ 8001cb8:	681b      	ldr	r3, [r3, #0]
+ 8001cba:	60fb      	str	r3, [r7, #12]
+  /* Infinite loop */
+  for(;;)
+  {
+	Uart_Send();
+ 8001cbc:	f7ff fb24 	bl	8001308 <Uart_Send>
+    osDelay(period-execution_time);
+ 8001cc0:	68fa      	ldr	r2, [r7, #12]
+ 8001cc2:	693b      	ldr	r3, [r7, #16]
+ 8001cc4:	1ad3      	subs	r3, r2, r3
+ 8001cc6:	4618      	mov	r0, r3
+ 8001cc8:	f004 fa0e 	bl	80060e8 <osDelay>
+	Uart_Send();
+ 8001ccc:	bf00      	nop
+ 8001cce:	e7f5      	b.n	8001cbc <StartUART_Send+0x28>
+ 8001cd0:	20000000 	.word	0x20000000
+
+08001cd4 <StartTask_ISR>:
+* @param argument: Not used
+* @retval None
+*/
+/* USER CODE END Header_StartTask_ISR */
+void StartTask_ISR(void const * argument)
+{
+ 8001cd4:	b580      	push	{r7, lr}
+ 8001cd6:	b082      	sub	sp, #8
+ 8001cd8:	af00      	add	r7, sp, #0
+ 8001cda:	6078      	str	r0, [r7, #4]
+  /* USER CODE BEGIN StartTask_ISR */
+  /* Infinite loop */
+	  for(;;)
+	  {
+		 osSemaphoreWait(BinarySem_ISRHandle,osWaitForever);
+ 8001cdc:	4b2a      	ldr	r3, [pc, #168]	@ (8001d88 <StartTask_ISR+0xb4>)
+ 8001cde:	681b      	ldr	r3, [r3, #0]
+ 8001ce0:	f04f 31ff 	mov.w	r1, #4294967295
+ 8001ce4:	4618      	mov	r0, r3
+ 8001ce6:	f004 fa45 	bl	8006174 <osSemaphoreWait>
+		 if((char)Uart_RX_Buf[0] == '3')
+ 8001cea:	4b28      	ldr	r3, [pc, #160]	@ (8001d8c <StartTask_ISR+0xb8>)
+ 8001cec:	781b      	ldrb	r3, [r3, #0]
+ 8001cee:	2b33      	cmp	r3, #51	@ 0x33
+ 8001cf0:	d114      	bne.n	8001d1c <StartTask_ISR+0x48>
+		 {
+			TVOC_measure();
+ 8001cf2:	f7ff fab7 	bl	8001264 <TVOC_measure>
+			sprintf((char*)Uart_TX_Buf, "TVOC:%d ppb\r\n",(int)Tvoc_ppb);
+ 8001cf6:	4b26      	ldr	r3, [pc, #152]	@ (8001d90 <StartTask_ISR+0xbc>)
+ 8001cf8:	881b      	ldrh	r3, [r3, #0]
+ 8001cfa:	461a      	mov	r2, r3
+ 8001cfc:	4925      	ldr	r1, [pc, #148]	@ (8001d94 <StartTask_ISR+0xc0>)
+ 8001cfe:	4826      	ldr	r0, [pc, #152]	@ (8001d98 <StartTask_ISR+0xc4>)
+ 8001d00:	f006 ff9e 	bl	8008c40 <siprintf>
+			HAL_UART_Transmit(&huart1,(uint8_t*) Uart_TX_Buf,strlen((char*)Uart_TX_Buf) , HAL_MAX_DELAY);
+ 8001d04:	4824      	ldr	r0, [pc, #144]	@ (8001d98 <StartTask_ISR+0xc4>)
+ 8001d06:	f7fe fa23 	bl	8000150 <strlen>
+ 8001d0a:	4603      	mov	r3, r0
+ 8001d0c:	b29a      	uxth	r2, r3
+ 8001d0e:	f04f 33ff 	mov.w	r3, #4294967295
+ 8001d12:	4921      	ldr	r1, [pc, #132]	@ (8001d98 <StartTask_ISR+0xc4>)
+ 8001d14:	4821      	ldr	r0, [pc, #132]	@ (8001d9c <StartTask_ISR+0xc8>)
+ 8001d16:	f003 fb2d 	bl	8005374 <HAL_UART_Transmit>
+ 8001d1a:	e030      	b.n	8001d7e <StartTask_ISR+0xaa>
+		 }
+		 else if((char)Uart_RX_Buf[0]  == '2')
+ 8001d1c:	4b1b      	ldr	r3, [pc, #108]	@ (8001d8c <StartTask_ISR+0xb8>)
+ 8001d1e:	781b      	ldrb	r3, [r3, #0]
+ 8001d20:	2b32      	cmp	r3, #50	@ 0x32
+ 8001d22:	d114      	bne.n	8001d4e <StartTask_ISR+0x7a>
+		 {
+			CO2_measure();
+ 8001d24:	f7ff faae 	bl	8001284 <CO2_measure>
+			sprintf((char*)Uart_TX_Buf, "CO2:%d ppm\r\n",(int)CO2_ppm);
+ 8001d28:	4b1d      	ldr	r3, [pc, #116]	@ (8001da0 <StartTask_ISR+0xcc>)
+ 8001d2a:	881b      	ldrh	r3, [r3, #0]
+ 8001d2c:	461a      	mov	r2, r3
+ 8001d2e:	491d      	ldr	r1, [pc, #116]	@ (8001da4 <StartTask_ISR+0xd0>)
+ 8001d30:	4819      	ldr	r0, [pc, #100]	@ (8001d98 <StartTask_ISR+0xc4>)
+ 8001d32:	f006 ff85 	bl	8008c40 <siprintf>
+			HAL_UART_Transmit(&huart1,(uint8_t*) Uart_TX_Buf,strlen((char*)Uart_TX_Buf) , HAL_MAX_DELAY);
+ 8001d36:	4818      	ldr	r0, [pc, #96]	@ (8001d98 <StartTask_ISR+0xc4>)
+ 8001d38:	f7fe fa0a 	bl	8000150 <strlen>
+ 8001d3c:	4603      	mov	r3, r0
+ 8001d3e:	b29a      	uxth	r2, r3
+ 8001d40:	f04f 33ff 	mov.w	r3, #4294967295
+ 8001d44:	4914      	ldr	r1, [pc, #80]	@ (8001d98 <StartTask_ISR+0xc4>)
+ 8001d46:	4815      	ldr	r0, [pc, #84]	@ (8001d9c <StartTask_ISR+0xc8>)
+ 8001d48:	f003 fb14 	bl	8005374 <HAL_UART_Transmit>
+ 8001d4c:	e017      	b.n	8001d7e <StartTask_ISR+0xaa>
+		 }
+		 else if((char)Uart_RX_Buf[0]  == '1')
+ 8001d4e:	4b0f      	ldr	r3, [pc, #60]	@ (8001d8c <StartTask_ISR+0xb8>)
+ 8001d50:	781b      	ldrb	r3, [r3, #0]
+ 8001d52:	2b31      	cmp	r3, #49	@ 0x31
+ 8001d54:	d113      	bne.n	8001d7e <StartTask_ISR+0xaa>
+		 {
+			CO_measure();
+ 8001d56:	f7ff fa43 	bl	80011e0 <CO_measure>
+			sprintf((char*)Uart_TX_Buf, "CO:%d ppm\r\n",(int)CO_ppm);
+ 8001d5a:	4b13      	ldr	r3, [pc, #76]	@ (8001da8 <StartTask_ISR+0xd4>)
+ 8001d5c:	881b      	ldrh	r3, [r3, #0]
+ 8001d5e:	461a      	mov	r2, r3
+ 8001d60:	4912      	ldr	r1, [pc, #72]	@ (8001dac <StartTask_ISR+0xd8>)
+ 8001d62:	480d      	ldr	r0, [pc, #52]	@ (8001d98 <StartTask_ISR+0xc4>)
+ 8001d64:	f006 ff6c 	bl	8008c40 <siprintf>
+			HAL_UART_Transmit(&huart1,(uint8_t*) Uart_TX_Buf,strlen((char*)Uart_TX_Buf) , HAL_MAX_DELAY);
+ 8001d68:	480b      	ldr	r0, [pc, #44]	@ (8001d98 <StartTask_ISR+0xc4>)
+ 8001d6a:	f7fe f9f1 	bl	8000150 <strlen>
+ 8001d6e:	4603      	mov	r3, r0
+ 8001d70:	b29a      	uxth	r2, r3
+ 8001d72:	f04f 33ff 	mov.w	r3, #4294967295
+ 8001d76:	4908      	ldr	r1, [pc, #32]	@ (8001d98 <StartTask_ISR+0xc4>)
+ 8001d78:	4808      	ldr	r0, [pc, #32]	@ (8001d9c <StartTask_ISR+0xc8>)
+ 8001d7a:	f003 fafb 	bl	8005374 <HAL_UART_Transmit>
+		 }
+		 osDelay(1000);
+ 8001d7e:	f44f 707a 	mov.w	r0, #1000	@ 0x3e8
+ 8001d82:	f004 f9b1 	bl	80060e8 <osDelay>
+		 osSemaphoreWait(BinarySem_ISRHandle,osWaitForever);
+ 8001d86:	e7a9      	b.n	8001cdc <StartTask_ISR+0x8>
+ 8001d88:	20000498 	.word	0x20000498
+ 8001d8c:	20000500 	.word	0x20000500
+ 8001d90:	200004b6 	.word	0x200004b6
+ 8001d94:	0800a4c4 	.word	0x0800a4c4
+ 8001d98:	200004d8 	.word	0x200004d8
+ 8001d9c:	20000430 	.word	0x20000430
+ 8001da0:	200004be 	.word	0x200004be
+ 8001da4:	0800a4e0 	.word	0x0800a4e0
+ 8001da8:	200004c4 	.word	0x200004c4
+ 8001dac:	0800a4d4 	.word	0x0800a4d4
 
 08001db0 <HAL_TIM_PeriodElapsedCallback>:
   * a global variable "uwTick" used as application time base.
@@ -4745,7 +4744,7 @@ LoopFillZerobss:
   ldr r1, =_edata
  8002338:	200000e8 	.word	0x200000e8
   ldr r2, =_sidata
- 800233c:	0800a6d8 	.word	0x0800a6d8
+ 800233c:	0800a6d0 	.word	0x0800a6d0
   ldr r2, =_sbss
  8002340:	200000e8 	.word	0x200000e8
   ldr r4, =_ebss
@@ -8417,6 +8416,11 @@ HAL_StatusTypeDef HAL_I2C_Mem_Read(I2C_HandleTypeDef *hi2c, uint16_t DevAddress,
  800383a:	681b      	ldr	r3, [r3, #0]
  800383c:	f422 6280 	bic.w	r2, r2, #1024	@ 0x400
  8003840:	601a      	str	r2, [r3, #0]
+  \details Disables IRQ interrupts by setting the I-bit in the CPSR.
+           Can only be executed in Privileged modes.
+ */
+__STATIC_FORCEINLINE void __disable_irq(void)
+{
   __ASM volatile ("cpsid i" : : : "memory");
  8003842:	b672      	cpsid	i
 }
@@ -11794,7 +11798,7 @@ if (((RCC_ClkInitStruct->ClockType) & RCC_CLOCKTYPE_PCLK1) == RCC_CLOCKTYPE_PCLK
  8004b2e:	bf00      	nop
  8004b30:	40022000 	.word	0x40022000
  8004b34:	40021000 	.word	0x40021000
- 8004b38:	0800a634 	.word	0x0800a634
+ 8004b38:	0800a630 	.word	0x0800a630
  8004b3c:	20000078 	.word	0x20000078
  8004b40:	2000007c 	.word	0x2000007c
 
@@ -11929,8 +11933,8 @@ uint32_t HAL_RCC_GetSysClockFreq(void)
  8004bd6:	bf00      	nop
  8004bd8:	40021000 	.word	0x40021000
  8004bdc:	007a1200 	.word	0x007a1200
- 8004be0:	0800a64c 	.word	0x0800a64c
- 8004be4:	0800a65c 	.word	0x0800a65c
+ 8004be0:	0800a648 	.word	0x0800a648
+ 8004be4:	0800a658 	.word	0x0800a658
  8004be8:	003d0900 	.word	0x003d0900
 
 08004bec <HAL_RCC_GetHCLKFreq>:
@@ -11976,7 +11980,7 @@ uint32_t HAL_RCC_GetPCLK1Freq(void)
  8004c1c:	4618      	mov	r0, r3
  8004c1e:	bd80      	pop	{r7, pc}
  8004c20:	40021000 	.word	0x40021000
- 8004c24:	0800a644 	.word	0x0800a644
+ 8004c24:	0800a640 	.word	0x0800a640
 
 08004c28 <HAL_RCC_GetPCLK2Freq>:
   * @note   Each time PCLK2 changes, this function must be called to update the
@@ -12002,7 +12006,7 @@ uint32_t HAL_RCC_GetPCLK2Freq(void)
  8004c44:	4618      	mov	r0, r3
  8004c46:	bd80      	pop	{r7, pc}
  8004c48:	40021000 	.word	0x40021000
- 8004c4c:	0800a644 	.word	0x0800a644
+ 8004c4c:	0800a640 	.word	0x0800a640
 
 08004c50 <HAL_RCC_GetClockConfig>:
   * contains the current clock configuration.
@@ -15540,6 +15544,11 @@ static int inHandlerMode (void)
  8005fd6:	b480      	push	{r7}
  8005fd8:	b083      	sub	sp, #12
  8005fda:	af00      	add	r7, sp, #0
+ */
+__STATIC_FORCEINLINE uint32_t __get_IPSR(void)
+{
+  uint32_t result;
+
   __ASM volatile ("MRS %0, ipsr" : "=r" (result) );
  8005fdc:	f3ef 8305 	mrs	r3, IPSR
  8005fe0:	607b      	str	r3, [r7, #4]
@@ -20381,7 +20390,7 @@ BaseType_t xReturn;
  8007892:	46bd      	mov	sp, r7
  8007894:	bd80      	pop	{r7, pc}
  8007896:	bf00      	nop
- 8007898:	0800a62c 	.word	0x0800a62c
+ 8007898:	0800a628 	.word	0x0800a628
  800789c:	08007e31 	.word	0x08007e31
  80078a0:	20000678 	.word	0x20000678
  80078a4:	20000674 	.word	0x20000674
@@ -24076,10 +24085,10 @@ uint8_t *puc;
  8008cce:	4798      	blx	r3
  8008cd0:	3601      	adds	r6, #1
  8008cd2:	e7f2      	b.n	8008cba <__libc_init_array+0x1e>
- 8008cd4:	0800a6d0 	.word	0x0800a6d0
- 8008cd8:	0800a6d0 	.word	0x0800a6d0
- 8008cdc:	0800a6d0 	.word	0x0800a6d0
- 8008ce0:	0800a6d4 	.word	0x0800a6d4
+ 8008cd4:	0800a6c8 	.word	0x0800a6c8
+ 8008cd8:	0800a6c8 	.word	0x0800a6c8
+ 8008cdc:	0800a6c8 	.word	0x0800a6c8
+ 8008ce0:	0800a6cc 	.word	0x0800a6cc
 
 08008ce4 <__retarget_lock_acquire_recursive>:
  8008ce4:	4770      	bx	lr
@@ -24596,9 +24605,9 @@ uint8_t *puc;
  8009184:	a904      	add	r1, sp, #16
  8009186:	f000 f87d 	bl	8009284 <_printf_i>
  800918a:	e7ed      	b.n	8009168 <_svfiprintf_r+0x1c0>
- 800918c:	0800a65e 	.word	0x0800a65e
- 8009190:	0800a664 	.word	0x0800a664
- 8009194:	0800a668 	.word	0x0800a668
+ 800918c:	0800a65a 	.word	0x0800a65a
+ 8009190:	0800a660 	.word	0x0800a660
+ 8009194:	0800a664 	.word	0x0800a664
  8009198:	00000000 	.word	0x00000000
  800919c:	08008ef1 	.word	0x08008ef1
 
@@ -24932,8 +24941,8 @@ uint8_t *puc;
  80094b4:	2500      	movs	r5, #0
  80094b6:	f104 0619 	add.w	r6, r4, #25
  80094ba:	e7f5      	b.n	80094a8 <_printf_i+0x224>
- 80094bc:	0800a66f 	.word	0x0800a66f
- 80094c0:	0800a680 	.word	0x0800a680
+ 80094bc:	0800a66b 	.word	0x0800a66b
+ 80094c0:	0800a67c 	.word	0x0800a67c
 
 080094c4 <memmove>:
  80094c4:	4288      	cmp	r0, r1
@@ -25884,11 +25893,11 @@ uint8_t *puc;
  8009e6c:	43400000 	.word	0x43400000
  8009e70:	0003988e 	.word	0x0003988e
  8009e74:	000bb679 	.word	0x000bb679
- 8009e78:	0800a6b8 	.word	0x0800a6b8
+ 8009e78:	0800a6b0 	.word	0x0800a6b0
  8009e7c:	3ff00000 	.word	0x3ff00000
  8009e80:	40080000 	.word	0x40080000
- 8009e84:	0800a698 	.word	0x0800a698
- 8009e88:	0800a6a8 	.word	0x0800a6a8
+ 8009e84:	0800a690 	.word	0x0800a690
+ 8009e88:	0800a6a0 	.word	0x0800a6a0
  8009e8c:	a39a      	add	r3, pc, #616	@ (adr r3, 800a0f8 <__ieee754_pow+0x9f0>)
  8009e8e:	e9d3 2300 	ldrd	r2, r3, [r3]
  8009e92:	4630      	mov	r0, r6
