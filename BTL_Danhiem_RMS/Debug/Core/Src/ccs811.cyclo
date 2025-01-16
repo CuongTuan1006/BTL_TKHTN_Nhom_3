@@ -6,8 +6,9 @@
 ../Core/Src/ccs811.c:67:6:CCS811_Set_Mode	1
 ../Core/Src/ccs811.c:84:6:CCS811_Read_Co2	1
 ../Core/Src/ccs811.c:92:6:CCS811_Read_TVOC	1
-../Core/Src/ccs811.c:100:9:CCS811_CheckHW_ID	2
-../Core/Src/ccs811.c:117:6:CCS811_EnableInt	1
-../Core/Src/ccs811.c:125:6:CCS811_DisableInt	1
-../Core/Src/ccs811.c:134:10:CCS811_GetBaseline	1
-../Core/Src/ccs811.c:142:6:CCS811_RestoreBaseline	1
+../Core/Src/ccs811.c:99:6:CCS811_Reset	1
+../Core/Src/ccs811.c:104:9:CCS811_CheckHW_ID	2
+../Core/Src/ccs811.c:121:6:CCS811_EnableInt	1
+../Core/Src/ccs811.c:129:6:CCS811_DisableInt	1
+../Core/Src/ccs811.c:138:10:CCS811_GetBaseline	1
+../Core/Src/ccs811.c:146:6:CCS811_RestoreBaseline	1

@@ -211,6 +211,7 @@ int main(void)
   MX_USART1_UART_Init();
   /* USER CODE BEGIN 2 */
   CCS811_Init();
+  CCS811_Reset();
   CCS811_Set_Mode(CCS811_MODE_1SEC);
   CCS811_EnableInt();
   HAL_ADC_Start(&hadc1);

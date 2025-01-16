@@ -96,7 +96,11 @@ void CCS811_Read_TVOC(uint16_t *Tvoc)
     // Ghép hai byte đầu để lấy giá trị eCO2
     *Tvoc = (buf[2] << 8) | buf[3];
 }
-
+void CCS811_Reset(void)
+{
+	HAL_GPIO_WritePin(GPIOC, GPIO_PIN_15, 0);
+	HAL_GPIO_WritePin(GPIOC, GPIO_PIN_15, 1);
+}
 uint8_t CCS811_CheckHW_ID() {
     uint8_t hw_id = 0;
     // xác mã định danh phần cứng từ thanh ghi HW_ID
@@ -144,3 +148,4 @@ void CCS811_RestoreBaseline(uint16_t baseline)
     uint8_t baseline_data[2] = {baseline >> 8, baseline & 0xFF};
     CCS811_WriteRegMulti(CCS811_BASELINE, baseline_data, 2);
 }
+
