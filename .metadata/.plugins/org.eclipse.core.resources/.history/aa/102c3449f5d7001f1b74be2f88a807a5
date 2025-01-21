@@ -54,5 +54,4 @@ void CCS811_Read_Co2(uint16_t *eCO2);
 void CCS811_Read_TVOC(uint16_t *Tvoc);
 uint16_t CCS811_GetBaseline();
 void CCS811_RestoreBaseline(uint16_t baseline);
-void CCS811_Reset(void);
 #endif /* INC_CCS811_H_ */

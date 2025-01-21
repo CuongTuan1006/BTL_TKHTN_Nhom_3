@@ -9,6 +9,14 @@
 extern I2C_HandleTypeDef hi2c2;
 
 #define hi2cxc hi2c2
+
+
+void CCS811_Reset(void)
+{
+	HAL_GPIO_WritePin(GPIOC, GPIO_PIN_15, 0);
+	HAL_GPIO_WritePin(GPIOC, GPIO_PIN_15, 1);
+}
+
 // Hàm đọc từ 1 thanh ghi (1byte)
 uint8_t CCS811_ReadReg(uint8_t addr)
 {
@@ -95,11 +103,6 @@ void CCS811_Read_TVOC(uint16_t *Tvoc)
     CCS811_ReadRegMulti(CCS811_ALG_RESULT_DATA, buf, 8);
     // Ghép hai byte đầu để lấy giá trị eCO2
     *Tvoc = (buf[2] << 8) | buf[3];
-}
-void CCS811_Reset(void)
-{
-	HAL_GPIO_WritePin(GPIOC, GPIO_PIN_15, 0);
-	HAL_GPIO_WritePin(GPIOC, GPIO_PIN_15, 1);
 }
 uint8_t CCS811_CheckHW_ID() {
     uint8_t hw_id = 0;

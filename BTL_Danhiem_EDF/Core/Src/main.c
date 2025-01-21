@@ -83,7 +83,7 @@ TaskConfig tasks[] = {
     {"StartTVOC_mea", 10, 2100, 3000},
     {"StartWarning", 5, 150, 1000},
 	{"StartLCD_1", 60, 300, 1000},
-    {"StartUart_Send", 10, 2400, 1000},
+    {"StartUart_Send", 10, 2400, 3000},
 };
 osThreadId task_ids[MAX_TASK];
 uint32_t deadlines[MAX_TASK]={100,1100,2100,150,300,2400};
@@ -155,12 +155,12 @@ void LCD_Display(SensorData data)
 
 void Uart_Send()
 {
-	sprintf((char*)Uart_TX_Buf, "TVOC:%d ppb\r\n",(int)Tvoc_ppb);
-	HAL_UART_Transmit(&huart1,(uint8_t*) Uart_TX_Buf,strlen((char*)Uart_TX_Buf) , HAL_MAX_DELAY);
 	sprintf((char*)Uart_TX_Buf, "CO:%d ppm\r\n",(int)CO_ppm);
 	HAL_UART_Transmit(&huart1, (uint8_t*)Uart_TX_Buf,strlen((char*)Uart_TX_Buf) , HAL_MAX_DELAY);
 	sprintf((char*)Uart_TX_Buf, "CO2:%d ppm\r\n",(int)CO2_ppm);
 	HAL_UART_Transmit(&huart1,(uint8_t*)Uart_TX_Buf,strlen((char*)Uart_TX_Buf) , HAL_MAX_DELAY);
+	sprintf((char*)Uart_TX_Buf, "TVOC:%d ppb\r\n",(int)Tvoc_ppb);
+	HAL_UART_Transmit(&huart1,(uint8_t*) Uart_TX_Buf,strlen((char*)Uart_TX_Buf) , HAL_MAX_DELAY);
 	sprintf((char*)Uart_TX_Buf, "--------\r\n");
 	HAL_UART_Transmit(&huart1, (uint8_t*)Uart_TX_Buf, strlen((char*)Uart_TX_Buf), HAL_MAX_DELAY);
 }
@@ -739,18 +739,24 @@ void StartTask_ISR(void const * argument)
 			TVOC_measure();
 			sprintf((char*)Uart_TX_Buf, "TVOC:%d ppb\r\n",(int)Tvoc_ppb);
 			HAL_UART_Transmit(&huart1,(uint8_t*) Uart_TX_Buf,strlen((char*)Uart_TX_Buf) , HAL_MAX_DELAY);
+			sprintf((char*)Uart_TX_Buf, "--------\r\n");
+			HAL_UART_Transmit(&huart1, (uint8_t*)Uart_TX_Buf, strlen((char*)Uart_TX_Buf), HAL_MAX_DELAY);
 		 }
 		 else if((char)Uart_RX_Buf[0]  == '2')
 		 {
 			CO2_measure();
 			sprintf((char*)Uart_TX_Buf, "CO2:%d ppm\r\n",(int)CO2_ppm);
 			HAL_UART_Transmit(&huart1,(uint8_t*) Uart_TX_Buf,strlen((char*)Uart_TX_Buf) , HAL_MAX_DELAY);
+			sprintf((char*)Uart_TX_Buf, "--------\r\n");
+			HAL_UART_Transmit(&huart1, (uint8_t*)Uart_TX_Buf, strlen((char*)Uart_TX_Buf), HAL_MAX_DELAY);
 		 }
 		 else if((char)Uart_RX_Buf[0]  == '1')
 		 {
 			CO_measure();
 			sprintf((char*)Uart_TX_Buf, "CO:%d ppm\r\n",(int)CO_ppm);
 			HAL_UART_Transmit(&huart1,(uint8_t*) Uart_TX_Buf,strlen((char*)Uart_TX_Buf) , HAL_MAX_DELAY);
+			sprintf((char*)Uart_TX_Buf, "--------\r\n");
+			HAL_UART_Transmit(&huart1, (uint8_t*)Uart_TX_Buf, strlen((char*)Uart_TX_Buf), HAL_MAX_DELAY);
 		 }
 		 osDelay(1000);
 	  }
